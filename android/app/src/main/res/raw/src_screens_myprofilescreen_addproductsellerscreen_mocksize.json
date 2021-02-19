@@ -1,0 +1,54 @@
+{
+    "message": "Data Success",
+    "status": 200,
+    "data": [
+      {
+        "id": 1,
+        "size": "XS"
+      },
+      {
+        "id": 2,
+        "size": "S"
+      },
+      {
+        "id": 3,
+        "size": "M"
+      },
+      {
+        "id": 4,
+        "size": "L"
+      },
+      {
+        "id": 5,
+        "size": "XL"
+      },
+      {
+        "id": 6,
+        "size": "XXL"
+      },
+      {
+        "id": 7,
+        "size": "XXXL"
+      },
+      {
+        "id": 8,
+        "size": "28"
+      },
+      {
+        "id": 9,
+        "size": "29"
+      },
+      {
+        "id": 10,
+        "size": "30"
+      },
+      {
+        "id": 11,
+        "size": "31"
+      },
+      {
+        "id": 12,
+        "size": "32"
+      }
+    ]
+  }
