@@ -20,7 +20,7 @@ export const CLEAR_CHECKOUT = 'clear_checkout';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const REGISTER = 'REGISTER';
-export const RESET_PASSWORD = 'RESET_PASSWORD';
+export const SETEMAIL = 'SETEMAIL';
 export const RESET_FULLFILLED = 'RESET_FULLFILLED';
 export const CLEAR_STATE = 'CLEAR_STATE';
 

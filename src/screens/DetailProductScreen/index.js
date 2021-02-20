@@ -16,7 +16,7 @@ import {connect, useSelector} from 'react-redux';
 import {addToCart} from '../../utils/redux/action/cartAction';
 import {API_URL} from '@env';
 
-// const BASE_URL = 'http://192.168.1.10:2005';
+// const API_URL = 'http://192.168.1.2:8007';
 
 const DetailProductScreen = ({navigation, route, addToCart}) => {
   const {itemId, item, categories} = route.params;
@@ -97,7 +97,7 @@ const DetailProductScreen = ({navigation, route, addToCart}) => {
             source={
               product.product_photo
                 ? {
-                    uri: `${JSON.parse(product.product_photo).shift()}`,
+                    uri: API_URL + `${JSON.parse(product.product_photo).shift()}`,
                     resizeMode: 'contain',
                   }
                 : null
@@ -281,7 +281,7 @@ const DetailProductScreen = ({navigation, route, addToCart}) => {
                     <View>
                       <Image
                         // source={require('../../../assets/images/home3.png')}
-                        source={{uri: `${JSON.parse(product_photo).shift()}`}}
+                        source={{uri: API_URL + `${JSON.parse(product_photo).shift()}`}}
                         style={{borderRadius: 10, width: 120, height: 170}}
                       />
                       <View style={styles.rating}>

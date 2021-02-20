@@ -1,67 +1,100 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Text from '../../../components/Text';
 import {ButtonSubmit} from '../../../components/index';
 import FormInput from 'react-native-outline-input';
+import axios from 'axios';
+import {useSelector} from 'react-redux';
+// import {API_URL} from '@env';
 
-export default class ResetPassword extends Component {
-  state = {
-    newPassword: '',
-    confirmationNewPassword: '',
+const ResetPassword = ({navigation}) => {
+  const API_URL = 'http://192.168.1.2:8007';
+  const [pass, setPass] = useState('');
+  const [pass2, setPass2] = useState('');
+  const [errMsg, setErrMsg] = useState('');
+
+  const email = useSelector((state) => state.authReducer.email);
+
+  const handleSubmit = () => {
+    const checkPass = /^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{8,}$/;
+    if (pass !== pass2) {
+      setErrMsg('password does not match');
+    } else if (!checkPass.test(pass)) {
+      setErrMsg(
+        'Password must contain at least 1 number, and be longer than 8 character',
+      );
+    } else {
+      const data = {
+        email: email,
+        password: pass,
+      };
+      axios
+        .patch(API_URL + `/auth/reset`, data)
+        .then((res) => {
+          console.log('bisaa reset', res);
+          navigation.push('Login');
+        })
+        .catch(({response}) => {
+          setErrMsg(response.data.message);
+        });
+    }
   };
-  handleChange(text) {
-    this.setState({
-      newPassword: text,
-    });
-  }
-  handlerChange(password) {
-    this.setState({
-      confirmationNewPassword: password,
-    });
-  }
-  render() {
-    const {newPassword, confirmationNewPassword} = this.state;
-    return (
-      <View style={styles.container}>
+
+  return (
+    <View style={styles.container}>
+      <Text
+        size="xl3"
+        children="Reset Password"
+        type="Bold"
+        style={styles.title}
+      />
+      <View style={styles.FormInput}>
         <Text
-          size="xl3"
-          children="Reset Password"
+          color="red"
+          size="xl"
           type="Bold"
-          style={styles.title}
+          children="You need to change your password to activate your account"
+          style={styles.text}
         />
-        <View style={styles.FormInput}>
-          <Text
-            color="red"
-            size="xl"
-            type="Bold"
-            children="You need to change your password to activate your account"
-            style={styles.text}
-          />
-          <View style={styles.input}>
-            <FormInput
-              value={newPassword}
-              onChangeText={(text) => this.handleChange(text)}
-              label="New Password"
-              passiveBorderColor="black"
-              style={styles.form1}
-              secureTextEntry
-            />
-          </View>
+        <Text
+          style={{
+            marginBottom: 10,
+            color: 'red',
+            paddingRight: 10,
+            fontSize: 15,
+            textAlign: 'center',
+          }}>
+          {errMsg}
+        </Text>
+        <View style={styles.input}>
           <FormInput
-            value={confirmationNewPassword}
-            onChangeText={(password) => this.handlerChange(password)}
-            label="Confirmation New Password"
+            value={pass}
+            onChangeText={(pass) => setPass(pass)}
+            label="New Password"
             passiveBorderColor="black"
-            style={styles.form2}
+            style={styles.form1}
             secureTextEntry
           />
-
-          <ButtonSubmit title="Reset Password" bg="red" rippleColor="white" />
         </View>
+        <FormInput
+          value={pass2}
+          onChangeText={(pass2) => setPass2(pass2)}
+          label="Confirmation New Password"
+          passiveBorderColor="black"
+          style={styles.form2}
+          secureTextEntry
+        />
+
+        <ButtonSubmit
+          title="Reset Password"
+          bg="red"
+          rippleColor="white"
+          onPress={handleSubmit}
+        />
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -93,3 +126,5 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 });
+
+export default ResetPassword;

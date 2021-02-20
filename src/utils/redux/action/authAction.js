@@ -36,3 +36,12 @@ export const logout = (token, user_id, level) => {
     },
   };
 };
+
+export const setEmailForgot = (email) => {
+  return {
+    type:actionTypes.SETEMAIL,
+    payload:{
+      email: email,
+    }
+  }
+}

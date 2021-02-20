@@ -15,10 +15,11 @@ import {Text} from '../../../components';
 import {IconStarAct} from '../../../assets/icons';
 
 import {colors} from '../../../utils';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 
 const HomeScreen = ({navigation}) => {
   // const BASE_URL = process.env.BASE_URL;
+  const API_URL = 'http://192.168.1.2:8007'
   const [card, setCard] = useState([]);
   const [cardTwo, setCardTwo] = useState([]);
 
@@ -130,7 +131,7 @@ const HomeScreen = ({navigation}) => {
                       backgroundColor: 'white',
                     }}>
                     <Image
-                      source={{uri: `${JSON.parse(product_photo).shift()}`}}
+                      source={{uri: API_URL + `${JSON.parse(product_photo).shift()}`}}
                       style={{
                         borderRadius: 10,
                         width: 120,
@@ -209,7 +210,7 @@ const HomeScreen = ({navigation}) => {
                       backgroundColor: 'white',
                     }}>
                     <Image
-                      source={{uri: `${JSON.parse(product_photo).shift()}`}}
+                      source={{uri: API_URL + `${JSON.parse(product_photo).shift()}`}}
                       style={{
                         borderRadius: 10,
                         width: 120,

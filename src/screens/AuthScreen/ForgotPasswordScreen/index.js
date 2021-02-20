@@ -1,5 +1,6 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import OutlineInput from 'react-native-outline-input';
+import axios from 'axios';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import {
   Text,
@@ -7,73 +8,91 @@ import {
   ButtonSubmit,
   OutlineFormInput,
 } from '../../../components/index';
-
+// import {API_URL} from '@env';
 import {colors} from '../../../utils';
 
-class ForgotPassword extends Component {
-  state = {
-    email: '',
+//redux
+import { connect } from 'react-redux';
+import { setEmailForgot } from '../../../utils/redux/action/authAction';
+
+const ForgotPassword = ({navigation, setEmailForgot}) => {
+  const API_URL = 'http://192.168.1.2:8007';
+  const [email, setEmail] = useState('');
+  const [err, setErr] = useState('');
+
+  const handleSubmit = () => {
+    const emailFormat = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+
+    if (email === '') {
+      setErr('plis input email first!!');
+    } else if (!email.match(emailFormat)) {
+      setErr(`Invalid Format email ['@', '.', 'domain']`);
+    } else {
+      const data = {
+        email: email,
+      };
+      axios
+        .post(`${API_URL}/auth/forgot`, data)
+        .then(async (res) => {
+          setEmailForgot(email);
+          navigation.push('Otp');
+          console.log('forgot done', res);
+        })
+        .catch((err) => {
+          if (err.response.data.message.message === 'Internal server err') {
+            setErr('Email Wrong');
+          }
+          console.log(err.response.data);
+        });
+    }
   };
 
-  componentDidMount() {
-    this.setState.email;
-  }
-
-  handleChange(text) {
-    this.setState({email: text});
-  }
-  render() {
-    return (
-      <ScrollView style={styles.container}>
-        <Text size="xl" type="Bold" style={styles.forgotText}>
-          FORGOT PASSWORD
+  return (
+    <ScrollView style={styles.container}>
+      <Text size="xl" type="Bold" style={styles.forgotText}>
+        FORGOT PASSWORD
+      </Text>
+      <View style={styles.form}>
+        <Text
+          size="l"
+          children="Please, enter your email address. You will receive a link to create a new password via email"
+          style={styles.forgotInfo}
+        />
+        <Text
+          style={{
+            marginBottom: 10,
+            color: 'red',
+            paddingRight: 10,
+            fontSize: 15,
+            textAlign: 'center',
+          }}>
+          {err}
         </Text>
-        <View style={styles.form}>
-          <Text
-            size="l"
-            children="Please, enter your email address. You will receive a link to create a new password via email"
-            style={styles.forgotInfo}
-          />
-          {/* <View style={styles.input}>
-          <Text children="Email" style={styles.label} />
-          <FormInput
-            keyboardType="email-address"
-            placeholder="Email"
-            style={styles.formInput}
-          />
-        </View> */}
-          <OutlineInput
-            value={this.state.email}
-            onChangeText={(text) => this.handleChange(text)}
-            label="Email"
-            activeValueColor={colors.black}
-            activeBorderColor={colors.green}
-            activeLabelColor={colors.green}
-            passiveBorderColor={colors.black}
-            passiveLabelColor={colors.black}
-            passiveValueColor={colors.black}
-            autoCompleteType="email"
-            keyboardType="email-address"
-            style={styles.formInput}
-          />
-
-          <Text
-            children="Not a valid email address. Should be your@email.com"
-            color="red"
-            style={styles.alertEmail}
-          />
-          <ButtonSubmit
-            onPress={() => Alert.alert('Success')}
-            title="SEND"
-            bg="red"
-            size="l"
-            style={styles.btnSend}
-          />
-        </View>
-      </ScrollView>
-    );
-  }
-}
+        <OutlineInput
+          value={email}
+          onChangeText={(email) => setEmail(email)}
+          label="Email"
+          activeValueColor={colors.black}
+          activeBorderColor={colors.green}
+          activeLabelColor={colors.green}
+          passiveBorderColor={colors.black}
+          passiveLabelColor={colors.black}
+          passiveValueColor={colors.black}
+          autoCompleteType="email"
+          keyboardType="email-address"
+          style={styles.formInput}
+        />
+        <ButtonSubmit
+          onPress={handleSubmit}
+          title="SEND"
+          bg="red"
+          size="l"
+          style={styles.btnSend}
+        />
+      </View>
+    </ScrollView>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -118,4 +137,11 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ForgotPassword;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setEmailForgot: (email) => 
+    dispatch(setEmailForgot(email)),
+  }
+}
+
+export default connect(null, mapDispatchToProps)(ForgotPassword);

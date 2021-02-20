@@ -14,9 +14,10 @@ import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {FloatingMenu} from 'react-native-floating-action-menu';
 
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 
 const ProductSeller = ({navigation, route}) => {
+  const API_URL = 'http://192.168.1.2:8007';
   //   const {itemId} = route.params;
   const [product, setProduct] = useState([]);
   const token = useSelector((state) => state.authReducer.token);

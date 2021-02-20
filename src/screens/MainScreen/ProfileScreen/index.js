@@ -12,11 +12,12 @@ import blanja from '../../../assets/images/Vector.png';
 import {connect, useSelector} from 'react-redux';
 import {logout} from '../../../utils/redux/action/authAction';
 import axios from 'axios';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 import {Text} from '../../../components';
 import {colors} from '../../../utils';
 
 const ProfileScreen = ({navigation, logout}) => {
+  const API_URL = 'http://192.168.1.2:8007';
   const level = useSelector((state) => state.authReducer.level);
   const token = useSelector((state) => state.authReducer.token);
   const user_id = useSelector((state) => state.authReducer.user_id);
