@@ -67,7 +67,7 @@ const ProductSeller = ({navigation, route}) => {
             }>
             <View style={[styles.itemContainer]}>
               <Image
-                source={{uri: `${JSON.parse(item.product_photo).shift()}`}}
+                source={{uri: API_URL + `${JSON.parse(item.product_photo).shift()}`}}
                 style={{
                   borderRadius: 10,
                   width: '100%',

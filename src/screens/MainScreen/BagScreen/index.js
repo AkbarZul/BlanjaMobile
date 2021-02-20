@@ -12,7 +12,7 @@ import {
 import {colors} from '../../../utils';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CheckBox from '@react-native-community/checkbox';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 import axios from 'axios';
 import {connect, useSelector} from 'react-redux';
 import {
@@ -42,6 +42,7 @@ const BagScreen = ({
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [address, setAddress] = useState([]);
+  const API_URL = 'http://192.168.1.2:8007';
 
   const token = useSelector((state) => state.authReducer.token);
 

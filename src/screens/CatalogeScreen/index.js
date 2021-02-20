@@ -13,9 +13,9 @@ import Iconn from 'react-native-vector-icons/Ionicons';
 import {colors} from '../../utils';
 import axios from 'axios';
 import ActionSheet from 'react-native-actions-sheet';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 
-// const BASE_URL = 'http://192.168.1.10:2005';
+const API_URL = 'http://192.168.1.2:8007';
 const actionSheetRef = createRef();
 
 export default function CatalogeScreen({navigation, route}) {

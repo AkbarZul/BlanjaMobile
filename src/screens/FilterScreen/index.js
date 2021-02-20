@@ -8,11 +8,12 @@ import {
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import axios from 'axios';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 import Text from '../../components/Text';
 import {FlatGrid} from 'react-native-super-grid';
 
 const FilterScreen = ({navigation}) => {
+  const API_URL = 'http://192.168.1.2:8007';
   const [filter, setFilter] = useState([]);
   const [category, setCategory] = useState([]);
   const [size, setSize] = useState([]);

@@ -10,12 +10,13 @@ import {
 import {ImgNotProduct} from '../../assets/images/no-product-found.png';
 import {FlatGrid} from 'react-native-super-grid';
 import axios from 'axios';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 import ActionSheet from 'react-native-actions-sheet';
 
 const actionSheetRef = createRef();
 
 const MainCatalogScreen = ({navigation, route}) => {
+  const API_URL = 'http://192.168.1.2:8007';
   let {card, search, pickColor, pickCategory, pickSize} = route.params;
   const [isProducts, setIsProducts] = useState([]);
   const [isSearching, setIsSearching] = useState([]);

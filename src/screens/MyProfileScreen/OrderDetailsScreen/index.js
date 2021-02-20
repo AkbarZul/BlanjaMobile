@@ -11,9 +11,10 @@ import {Text, ButtonSubmit} from '../../../components';
 import axios from 'axios';
 import {connect, useSelector} from 'react-redux';
 import moment from 'moment';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 
 const OrderDetails = ({navigation, route}) => {
+  const API_URL = 'http://192.168.1.2:8007';
   const {itemId, item, categories} = route.params;
   const [orderDetail, setOrderDetail] = useState({});
   const token = useSelector((state) => state.authReducer.token);

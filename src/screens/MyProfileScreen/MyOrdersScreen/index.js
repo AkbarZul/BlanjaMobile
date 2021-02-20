@@ -4,9 +4,10 @@ import {Text} from '../../../components/';
 import axios from 'axios';
 import {connect, useSelector} from 'react-redux';
 import moment from 'moment';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 
 const MyOrders = ({navigation}) => {
+  const API_URL = 'http://192.168.1.2:8007';
   const token = useSelector((state) => state.authReducer.token);
   const level = useSelector((state) => state.authReducer.level);
   const [historyOrders, setHistoryOrders] = useState([]);

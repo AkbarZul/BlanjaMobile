@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 import axios from 'axios';
 import CheckBox from '@react-native-community/checkbox';
 import {clearCart, clearCheckout} from '../../../utils/redux/action/cartAction';
@@ -23,6 +23,7 @@ import {
 } from '../../../notification';
 
 const CheckOut = ({checkout, navigation}) => {
+  const API_URL = 'http://192.168.1.2:8007';
   const [address, setAddress] = useState({});
   const [checkbox, setCheckbox] = useState(false);
   const [checkbox2, setCheckbox2] = useState(false);

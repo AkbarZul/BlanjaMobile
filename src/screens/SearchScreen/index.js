@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 // import FormInput from '../../components/FormInput';
 import axios from 'axios';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 import {FlatGrid} from 'react-native-super-grid';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import {colors} from '../../utils';
@@ -18,6 +18,7 @@ import {colors} from '../../utils';
 const Search = ({navigation}) => {
   const [search, setSearch] = useState('');
   const [dataSearch, setDataSearch] = useState([]);
+  const API_URL = 'http://192.168.1.2:8007';
 
   const BASE_URL = `${API_URL}/search`;
 

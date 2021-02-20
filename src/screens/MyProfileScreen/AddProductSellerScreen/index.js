@@ -16,7 +16,7 @@ import {useSelector} from 'react-redux';
 import axios from 'axios';
 import {Picker} from '@react-native-picker/picker';
 import ActionSheet from 'react-native-actions-sheet';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 import {createRef} from 'react';
 
 //mock from api
@@ -34,6 +34,7 @@ const AddProduct = ({navigation}) => {
     getCondition();
     getStatus();
   }, []);
+  const API_URL = 'http://192.168.1.2:8007';
 
   const BASE_URL = `${API_URL}`;
 

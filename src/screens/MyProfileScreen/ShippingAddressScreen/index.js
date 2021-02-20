@@ -9,11 +9,12 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import Text from '../../../components/Text';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 import axios from 'axios';
 import {useSelector} from 'react-redux';
 
 const ShippingAddress = ({navigation, route}) => {
+  const API_URL = 'http://192.168.1.2:8007';
   const [alamat, setAlamat] = useState([]);
   const token = useSelector((state) => state.authReducer.token);
 

@@ -6,9 +6,10 @@ import {Picker} from '@react-native-picker/picker';
 import FormInput from 'react-native-outline-input';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 
 const UpdateShippingAddress = ({navigation, route}) => {
+  const API_URL = 'http://192.168.1.2:8007';
   const {id, Fullname, Address, City, State, Zipcode, Country} = route.params;
   const [fullname, setFullname] = useState(Fullname);
   const [address, setAddress] = useState(Address);
