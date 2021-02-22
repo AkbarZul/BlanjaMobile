@@ -136,11 +136,11 @@ const Register = ({navigation, register}) => {
               width: '100%',
               marginVertical: 15,
             }}>
-            {level === '2' ? (
+            {/* {level === '2' ? (
               <Text children="Sign Up For Seller" size="l" />
             ) : (
               <Text children="Sign Up For Customer" size="l" />
-            )}
+            )} */}
             <Text
               style={{
                 marginBottom: 10,

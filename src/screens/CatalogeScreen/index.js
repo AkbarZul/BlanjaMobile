@@ -14,6 +14,7 @@ import {colors} from '../../utils';
 import axios from 'axios';
 import ActionSheet from 'react-native-actions-sheet';
 // import {API_URL} from '@env';
+import {Rating} from 'react-native-ratings';
 
 const API_URL = 'http://192.168.1.2:8007';
 const actionSheetRef = createRef();
@@ -29,6 +30,7 @@ export default function CatalogeScreen({navigation, route}) {
     categories,
   } = route.params;
   const [products, setProducts] = useState([]);
+  const [sortHint, setSortHint] = useState('Sort By');
 
   const getProduct = async (itemId) => {
     await axios
@@ -48,6 +50,7 @@ export default function CatalogeScreen({navigation, route}) {
       .then((res) => {
         const popularData = res.data.data.product;
         setProducts(popularData);
+        setSortHint('Sort By Popular');
       })
       .catch((err) => {
         console.log(err);
@@ -60,6 +63,20 @@ export default function CatalogeScreen({navigation, route}) {
       .then((res) => {
         const newestData = res.data.data.product;
         setProducts(newestData);
+        setSortHint('Sort By Newest');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const sortByCustomerReview = async (itemIdCustomerReview) => {
+    await axios
+      .get(`${API_URL}/categories/${itemIdCustomerReview}?keyword=rating`)
+      .then((res) => {
+        const customerReviewData = res.data.data.product;
+        setProducts(customerReviewData);
+        setSortHint('Sort By Customer Review');
       })
       .catch((err) => {
         console.log(err);
@@ -74,6 +91,7 @@ export default function CatalogeScreen({navigation, route}) {
       .then((res) => {
         const priceLowToHighData = res.data.data.product;
         setProducts(priceLowToHighData);
+        setSortHint('Sort By Price: Lowest to High');
       })
       .catch((err) => {
         console.log(err);
@@ -88,6 +106,7 @@ export default function CatalogeScreen({navigation, route}) {
       .then((res) => {
         const priceHighToLowData = res.data.data.product;
         setProducts(priceHighToLowData);
+        setSortHint('Sort By Price: High to Lowest');
       })
       .catch((err) => {
         console.log(err);
@@ -110,7 +129,7 @@ export default function CatalogeScreen({navigation, route}) {
         style={{
           backgroundColor: '#F9F9F9',
           flexDirection: 'row',
-          justifyContent: 'space-between',
+          justifyContent: 'space-around',
           paddingHorizontal: 20,
           paddingVertical: 20,
         }}>
@@ -135,22 +154,22 @@ export default function CatalogeScreen({navigation, route}) {
               actionSheetRef.current?.setModalVisible();
             }}>
             <Image source={require('../../assets/images/sort.png')} />
-            <Text style={{marginLeft: 5}}>Prices</Text>
+            <Text style={{marginLeft: 5}}>{sortHint}</Text>
           </TouchableOpacity>
           {/* <Icon name="filter" size={25} /> */}
         </View>
-        <View style={{alignItems: 'center'}}>
+        {/* <View style={{alignItems: 'center'}}>
           <Iconn name="apps-sharp" size={25} />
-        </View>
+        </View> */}
       </View>
 
       <FlatGrid
-        itemDimension={130}
+        // itemDimension={130}
         data={products}
-        style={styles.gridView}
+        // style={styles.gridView}
         // staticDimension={300}
         // fixed
-        spacing={10}
+        // spacing={10}
         renderItem={({item}) => (
           <TouchableOpacity
             onPress={() =>
@@ -160,23 +179,48 @@ export default function CatalogeScreen({navigation, route}) {
               })
             }>
             <View style={[styles.itemContainer, {backgroundColor: '#ffffff'}]}>
-              <View style={{paddingHorizontal: '15%'}}>
+              <View style={{width: '100%', justifyContent: 'center'}}>
                 <Image
-                  source={{uri: `${JSON.parse(item.product_photo).shift()}`}}
+                  source={{
+                    uri: `${API_URL}${JSON.parse(item.product_photo).shift()}`,
+                  }}
+                  resizeMode="center"
                   style={{
                     borderRadius: 10,
                     width: 120,
                     height: 100,
+                    alignSelf: 'center',
                   }}
                 />
               </View>
               <View style={styles.rating}>
-                <Image source={require('../../assets/images/Star.png')} />
-
+                <Rating
+                  ratingCount={5}
+                  startingValue={item.rating}
+                  readonly={true}
+                  imageSize={15}
+                  style={{paddingRight: 5}}
+                />
                 <Text children={item.rating} />
               </View>
-              <Text style={styles.itemName}>{item.product_name}</Text>
-              <Text style={styles.itemCode}>Rp.{item.product_price}</Text>
+              <View
+                sytle={{
+                  width: '100%',
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  marginVertical: 5,
+                }}>
+                <Text style={styles.itemName}>{item.product_name}</Text>
+              </View>
+              <View
+                sytle={{
+                  width: '100%',
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  marginVertical: 5,
+                }}>
+                <Text style={styles.itemCode}>Rp.{item.product_price}</Text>
+              </View>
             </View>
           </TouchableOpacity>
         )}
@@ -244,7 +288,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemContainer: {
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    flexDirection: 'column',
     borderRadius: 5,
     padding: 10,
     width: '100%',

@@ -67,7 +67,7 @@ const RatingAndReview = ({route}) => {
                 {data.rating_detail !== undefined &&
                   data.rating_detail.map(({rating, total_user}) => {
                     return (
-                      <View style={styles.rating}>
+                      <View style={styles.rating} key={(e, index) => index}>
                         <View
                           style={{
                             flexDirection: 'row',

@@ -14,9 +14,9 @@ import {ButtonSubmit} from '../../../components/index';
 import FormInput from 'react-native-outline-input';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
-import {Picker} from '@react-native-picker/picker';
+import {Picker as Select} from 'native-base';
 import ActionSheet from 'react-native-actions-sheet';
-// import {API_URL} from '@env';
+import {API_URL} from '@env';
 import {createRef} from 'react';
 
 //mock from api
@@ -362,38 +362,38 @@ const AddProduct = ({navigation}) => {
         <Text>size</Text>
       </TouchableOpacity>
 
-      <Picker
+      <Select
         style={{width: '100%'}}
         mode="dialog"
         selectedValue={ctg}
         onValueChange={(itemValue) => {
           setCtg(itemValue);
         }}>
-        <Picker.Item label="Category" />
+        <Select.Item label="Category" />
         {categories.length !== 0 &&
           categories.map(({id_categories, category_name}) => {
             return (
-              <Picker.Item
+              <Select.Item
                 key={id_categories}
                 label={category_name}
                 value={id_categories}
               />
             );
           })}
-      </Picker>
+      </Select>
 
-      <Picker
+      <Select
         style={{width: '100%'}}
         selectedValue={cnd}
         onValueChange={(itemValue) => {
           setCnd(itemValue);
         }}>
-        <Picker.Item label="Condition" />
+        <Select.Item label="Condition" />
         {condition.length !== 0 &&
           condition.map(({id, conditions}) => {
-            return <Picker.Item key={id} label={conditions} value={id} />;
+            return <Select.Item key={id} label={conditions} value={id} />;
           })}
-      </Picker>
+      </Select>
 
       <View style={styles.input}>
         <FormInput
@@ -431,18 +431,18 @@ const AddProduct = ({navigation}) => {
         />
       </View>
 
-      <Picker
+      <Select
         style={{width: '100%'}}
         selectedValue={sts}
         onValueChange={(itemValue) => {
           setSts(itemValue);
         }}>
-        <Picker.Item label="Status Barang" />
+        <Select.Item label="Status Barang" />
         {status.length !== 0 &&
           status.map(({id, name}) => {
-            return <Picker.Item key={id} label={name} value={id} />;
+            return <Select.Item key={id} label={name} value={id} />;
           })}
-      </Picker>
+      </Select>
 
       <ActionSheet gestureEnabled ref={colorSheetRef}>
         <ScrollView>

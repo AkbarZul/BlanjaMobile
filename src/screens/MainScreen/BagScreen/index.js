@@ -38,17 +38,18 @@ const BagScreen = ({
   clearCart,
   pickCart,
 }) => {
+  const API_URL = 'http://192.168.1.2:8007';
   const pick = useSelector((state) => state.cart.cart);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [address, setAddress] = useState([]);
-  const API_URL = 'http://192.168.1.2:8007';
 
   const token = useSelector((state) => state.authReducer.token);
+  const user_id = useSelector((state) => state.cart.cart);
 
-  useEffect(() => {
-    getAddressUser();
-  }, []);
+  // useEffect(() => {
+  //   getAddressUser();
+  // }, []);
 
   if (pick.length !== 0) {
     pick.map((item) =>
@@ -64,9 +65,8 @@ const BagScreen = ({
         },
       })
       .then((res) => {
-        const address = res.data.data[0].id_address;
-        setAddress(address);
-        console.log('ADDRESS', address);
+        const alamat = res.data.data[0];
+        setAddress(alamat);
       })
       .catch((err) => {
         console.log(err);
@@ -75,7 +75,6 @@ const BagScreen = ({
 
   const sendData = () => {
     let invoice = Math.floor(Math.random() * 100001) + 1;
-    let alamat = address;
     let productId = cart
       .filter((item) => item.pick === true)
       .map((item) => {
@@ -90,7 +89,8 @@ const BagScreen = ({
     const kirim = {
       item: productId,
       transaction_code: invoice,
-      id_address: alamat,
+      seller_id: user_id[0].user_id,
+      id_address: '',
     };
 
     // axios
@@ -139,39 +139,40 @@ const BagScreen = ({
                   onChange={() => pickCart(item.id)}
                   style={{marginTop: 50}}
                 />
-                <Image
-                  // source={require('../../../assets/images/home3.png')}
-                  source={{uri: `${item.img}`}}
-                  resizeMode="contain"
-                  style={{
-                    borderRadius: 10,
-                    width: 110,
-                    height: 130,
-                    // width: '20%',
-                    backgroundColor: 'white',
-                  }}
-                />
+                <View style={{height: '100%', paddingVertical: 10}}>
+                  <Image
+                    source={{uri: `${API_URL}${item.img}`}}
+                    resizeMode="center"
+                    style={{
+                      borderRadius: 10,
+                      width: 110,
+                      height: '100%',
+                      backgroundColor: 'white',
+                    }}
+                  />
+                </View>
+
                 <View
                   style={{
                     flexDirection: 'column',
+                    marginVertical: 10,
                     marginHorizontal: 10,
-                    marginTop: 5,
                   }}>
-                  <View>
+                  <View
+                    style={{
+                      width: '100%',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
                     <View
                       style={{
+                        width: '40%',
                         flexDirection: 'row',
-                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
                       }}>
-                      <View>
-                        <Text>{item.name}</Text>
-                        <View style={{flexDirection: 'row', marginTop: 7}}>
-                          <Text>Color: {item.warna}</Text>
-                          <Text style={{marginLeft: 9}}>
-                            Sizes: {item.ukuran}
-                          </Text>
-                        </View>
-                      </View>
+                      <Text>{item.name}</Text>
+                    </View>
+                    <View style={{width: '60%', marginLeft: 10}}>
                       <TouchableOpacity
                         onPress={() =>
                           Alert.alert(
@@ -191,23 +192,25 @@ const BagScreen = ({
                             {cancelable: false},
                           )
                         }>
-                        <Icon name="delete" size={30} color={colors.red} />
+                        <Icon name="delete" size={25} color={colors.red} />
                       </TouchableOpacity>
                     </View>
                   </View>
-
+                  <View style={{flexDirection: 'row', marginTop: 7}}>
+                    <Text>Color: {item.warna}</Text>
+                    <Text style={{marginLeft: 9}}>Sizes: {item.ukuran}</Text>
+                  </View>
                   <View
                     style={{
                       flexDirection: 'row',
-                      marginTop: 20,
+                      width: '100%',
                       alignContent: 'center',
-                      justifyContent: 'center',
                     }}>
                     <View
                       style={{
                         flexDirection: 'row',
-                        justifyContent: 'center',
                         alignItems: 'center',
+                        width: '30%',
                       }}>
                       {item.qty === 1 ? (
                         <TouchableOpacity style={styles.pickSize}>
@@ -240,7 +243,7 @@ const BagScreen = ({
                     <View
                       style={{
                         marginTop: 30,
-                        marginLeft: 80,
+                        width: '70%',
                         paddingBottom: 30,
                       }}>
                       <Text>{`Rp${(item.prc * item.qty).toLocaleString(
@@ -286,8 +289,8 @@ const BagScreen = ({
           onPress={() => {
             if (cart.length === 0 && totalItems === 0) {
               return Alert.alert(
-                'Bag',
-                'Blanja dulu skuy!',
+                'Your Bag is empty',
+                `Let's shop now!`,
                 [
                   {
                     text: 'OK',
@@ -311,13 +314,20 @@ const BagScreen = ({
             }
             navigation.navigate(
               'CheckOut',
+              {
+                id_address: address.id_address,
+                fullname: address.fullname,
+                address: address.address,
+                city: address.city,
+                region: address.region,
+                zip_code: address.zip_code,
+                country: address.country,
+              },
               sendData(),
-              totalPrice,
-              clearCart(),
             );
           }}
           style={styles.button}>
-          <Text>CheckOut</Text>
+          <Text>Checkout</Text>
         </TouchableHighlight>
       </View>
     </>
@@ -418,7 +428,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     deleteCart: (id) => dispatch(deleteCart(id)),
-    clearCart: () => dispatch(clearCart()),
+    // clearCart: () => dispatch(clearCart()),
     clearCheckout: () => dispatch(clearCheckout()),
     increaseQuantity: (id) => dispatch(increaseQuantity(id)),
     decreaseQuantity: (id) => dispatch(decreaseQuantity(id)),

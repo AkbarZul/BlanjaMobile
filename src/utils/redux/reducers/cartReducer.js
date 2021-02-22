@@ -5,6 +5,7 @@ const INITIAL_STATE = {
   checkout: {
     transaction_code: '',
     id_address: '',
+    seller_id: '',
     item: [],
   },
 };
@@ -17,7 +18,7 @@ const cartReducer = (state = INITIAL_STATE, action) => {
       //   ...state,
       //   cart: [...state.cart, action.payload],
       // };
-      console.log('ANJING', action.payload);
+      // console.log('ANJING', action.payload);
       const item = action.payload;
       const inCart = state.cart.find((item) =>
         item.id === action.payload.id ? true : false,
@@ -76,6 +77,7 @@ const cartReducer = (state = INITIAL_STATE, action) => {
           ...state.checkout,
           transaction_code: action.payload.transaction_code,
           id_address: action.payload.id_address,
+          seller_id: action.payload.seller_id,
           item: action.payload.item,
         },
       };
@@ -98,6 +100,8 @@ const cartReducer = (state = INITIAL_STATE, action) => {
         ...state,
         checkout: {
           transaction_code: '',
+          id_address: '',
+          seller_id: '',
           item: [],
         },
       };

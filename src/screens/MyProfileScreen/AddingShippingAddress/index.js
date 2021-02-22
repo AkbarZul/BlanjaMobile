@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import Text from '../../../components/Text';
 import {ButtonSubmit} from '../../../components/index';
-import {Picker} from '@react-native-picker/picker';
+import {Picker as Select} from 'native-base';
 import FormInput from 'react-native-outline-input';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
@@ -100,7 +100,7 @@ const AddingShippingAddress = ({navigation}) => {
         />
       </View>
       <View style={styles.input}>
-        <Picker
+        <Select
           mode="dropdown"
           selectedValue={country}
           onValueChange={(country) => setCountry(country)}
@@ -111,17 +111,17 @@ const AddingShippingAddress = ({navigation}) => {
             width: '98%',
             borderRadius: 5,
           }}>
-          <Picker.Item label="Country" />
-          <Picker.Item label="United States" value="United States" />
-          <Picker.Item label="Indonesia" value="Indonesia" />
-          <Picker.Item label="England" value="England" />
-        </Picker>
+          <Select.Item label="Country" />
+          <Select.Item label="United States" value="United States" />
+          <Select.Item label="Indonesia" value="Indonesia" />
+          <Select.Item label="England" value="England" />
+        </Select>
       </View>
       <ButtonSubmit
         title="Save Address"
         bg="red"
         rippleColor="white"
-        onPress={() => navigation.navigate('Profile', handleSubmit())}
+        onPress={() => navigation.navigate('Shipping address', handleSubmit())}
       />
     </ScrollView>
   );

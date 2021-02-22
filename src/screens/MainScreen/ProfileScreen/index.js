@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
+import {Button} from 'native-base';
 import {
   StyleSheet,
   View,
-  Button,
   Image,
   ScrollView,
+  Modal,
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,12 +13,11 @@ import blanja from '../../../assets/images/Vector.png';
 import {connect, useSelector} from 'react-redux';
 import {logout} from '../../../utils/redux/action/authAction';
 import axios from 'axios';
-// import {API_URL} from '@env';
+import {API_URL} from '@env';
 import {Text} from '../../../components';
 import {colors} from '../../../utils';
 
 const ProfileScreen = ({navigation, logout}) => {
-  const API_URL = 'http://192.168.1.2:8007';
   const level = useSelector((state) => state.authReducer.level);
   const token = useSelector((state) => state.authReducer.token);
   const user_id = useSelector((state) => state.authReducer.user_id);
@@ -26,10 +26,11 @@ const ProfileScreen = ({navigation, logout}) => {
   // console.log('nyoba', email, fullname);
   // console.log('ini token', token);
 
-  const [alamat, setAlamat] = useState([]);
-  const [historyOrders, setHistoryOrders] = useState([]);
-  const [products, setProduct] = useState([]);
-  const [orders, setOrder] = useState([]);
+  const [alamat, setAlamat] = useState(0);
+  const [historyOrders, setHistoryOrders] = useState(0);
+  const [products, setProduct] = useState(0);
+  const [orders, setOrder] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const getProductsSeller = () => {
     axios
@@ -40,7 +41,7 @@ const ProfileScreen = ({navigation, logout}) => {
       })
       .then((res) => {
         const product = res.data.data;
-        setProduct(product);
+        setProduct(product.length);
       })
       .catch((err) => {
         console.log(err);
@@ -56,7 +57,7 @@ const ProfileScreen = ({navigation, logout}) => {
       })
       .then((res) => {
         const orderIncome = res.data.data;
-        setOrder(orderIncome);
+        setOrder(orderIncome.length);
       })
       .catch((err) => {
         console.log(err);
@@ -72,15 +73,15 @@ const ProfileScreen = ({navigation, logout}) => {
       })
       .then((res) => {
         const historyOrders = res.data.data;
-        setHistoryOrders(historyOrders);
+        setHistoryOrders(historyOrders.length);
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const getAddressUser = async () => {
-    await axios
+  const getAddressUser = () => {
+    axios
       .get(`${API_URL}/address`, {
         headers: {
           'x-access-token': 'Bearer ' + token,
@@ -88,15 +89,15 @@ const ProfileScreen = ({navigation, logout}) => {
       })
       .then((res) => {
         const address = res.data.data;
-        setAlamat(address);
+        setAlamat(address.length);
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const handleLogout = () => {
-    axios
+  const handleLogout = async () => {
+    await axios
       .delete(API_URL + '/auth/logout', {
         headers: {
           'x-access-token': 'Bearer ' + token,
@@ -113,21 +114,27 @@ const ProfileScreen = ({navigation, logout}) => {
   };
 
   useEffect(() => {
-    getHistoryOrders();
-    getAddressUser();
-    getProductsSeller();
-    getIncomeOrders();
-  }, []);
+    if (level === 1) {
+      getAddressUser();
+      getHistoryOrders();
+    } else {
+      getProductsSeller();
+      getIncomeOrders();
+    }
+  }, [user_id]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      getAddressUser(),
-        getHistoryOrders(),
-        getProductsSeller(),
+      if (level === 1) {
+        getAddressUser();
+        getHistoryOrders();
+      } else {
+        getProductsSeller();
         getIncomeOrders();
+      }
     });
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, user_id]);
 
   return (
     <>
@@ -193,7 +200,7 @@ const ProfileScreen = ({navigation, logout}) => {
                 <View>
                   <Text children="My orders" size="xl" />
                   <Text
-                    children={`Already have ${historyOrders.length} orders`}
+                    children={`Already have ${historyOrders} orders`}
                     size="m"
                     color="gray"
                   />
@@ -210,11 +217,7 @@ const ProfileScreen = ({navigation, logout}) => {
                 onPress={() => navigation.navigate('Shipping address')}>
                 <View>
                   <Text children="Shipping address" size="xl" />
-                  <Text
-                    children={`${alamat.length} address`}
-                    size="m"
-                    color="gray"
-                  />
+                  <Text children={`${alamat} address`} size="m" color="gray" />
                 </View>
                 <View>
                   <Icon name="chevron-right" size={30} color={colors.gray} />
@@ -253,7 +256,9 @@ const ProfileScreen = ({navigation, logout}) => {
                 </View>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.btnLogout} onPress={handleLogout}>
+            <TouchableOpacity
+              style={styles.btnLogout}
+              onPress={() => setModalVisible(true)}>
               <Text color="white" size="xl">
                 Logout
               </Text>
@@ -282,7 +287,7 @@ const ProfileScreen = ({navigation, logout}) => {
                 <View>
                   <Text children="View Product" size="xl" />
                   <Text
-                    children={`View all product seller, You Have ${products.length} products`}
+                    children={`View all product seller, You Have ${products} products`}
                     size="m"
                     color="gray"
                   />
@@ -301,7 +306,7 @@ const ProfileScreen = ({navigation, logout}) => {
                 <View>
                   <Text children="My orders" size="xl" />
                   <Text
-                    children={`Already have ${orders.length} orders`}
+                    children={`Already have ${orders} orders`}
                     size="m"
                     color="gray"
                   />
@@ -342,13 +347,57 @@ const ProfileScreen = ({navigation, logout}) => {
                 </View>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.btnLogout} onPress={handleLogout}>
+            <TouchableOpacity
+              style={styles.btnLogout}
+              onPress={() => setModalVisible(true)}>
               <Text color="white" size="xl">
                 Logout
               </Text>
             </TouchableOpacity>
           </>
         )}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          // hardwareAccelerated={true}
+          statusBarTranslucent={true}
+          visible={modalVisible}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Are you sure want to logout?</Text>
+              <View
+                style={{
+                  marginTop: 20,
+                  flexDirection: 'row',
+                  width: 250,
+                  justifyContent: 'space-between',
+                }}>
+                <Button
+                  style={{
+                    ...styles.closeButton,
+                    backgroundColor: colors.white,
+                    borderColor: colors.red,
+                    borderWidth: 1,
+                  }}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                  }}>
+                  <Text style={{...styles.textStyle, color: colors.red}}>
+                    No
+                  </Text>
+                </Button>
+                <Button
+                  style={{...styles.closeButton, backgroundColor: colors.red}}
+                  onPress={() => {
+                    handleLogout();
+                    setModalVisible(!modalVisible);
+                  }}>
+                  <Text style={styles.textStyle}>Yes</Text>
+                </Button>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     </>
   );
@@ -382,7 +431,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.red,
     paddingVertical: 10,
     bottom: 0,
-    marginBottom: 10,
+    marginBottom: 20,
     borderRadius: 50,
     alignSelf: 'center',
     alignItems: 'center',
@@ -403,6 +452,57 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     marginVertical: 20,
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    height: 200,
+    width: 300,
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  closeButton: {
+    backgroundColor: '#6379F4',
+    height: 40,
+    width: 100,
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 25,
+  },
+  editWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 10,
   },
 });
 

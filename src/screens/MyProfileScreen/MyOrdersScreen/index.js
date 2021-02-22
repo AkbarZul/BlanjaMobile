@@ -13,9 +13,10 @@ const MyOrders = ({navigation}) => {
   const [historyOrders, setHistoryOrders] = useState([]);
   const [order, setOrder] = useState([]);
   const [tglFormat, setTglFormat] = useState();
+  console.log('order', order);
 
-  const getHistoryOrders = () => {
-    axios
+  const getHistoryOrders = async () => {
+    await axios
       .get(`${API_URL}/orders`, {
         headers: {
           'x-access-token': 'Bearer ' + token,
@@ -34,8 +35,8 @@ const MyOrders = ({navigation}) => {
       });
   };
 
-  const getIncomeOrders = () => {
-    axios
+  const getIncomeOrders = async () => {
+    await axios
       .get(`${API_URL}/orders/seller`, {
         headers: {
           'x-access-token': 'Bearer ' + token,
@@ -44,6 +45,7 @@ const MyOrders = ({navigation}) => {
       .then((res) => {
         const orderIncome = res.data.data;
         setOrder(orderIncome);
+        console.log('ORDERINCOME', orderIncome);
       })
       .catch((err) => {
         console.log(err);
@@ -161,10 +163,10 @@ const MyOrders = ({navigation}) => {
                 status_order,
               }) => {
                 return (
-                  <TouchableOpacity style={styles.card}>
+                  <TouchableOpacity style={styles.card} key={id}>
                     {/* onPress={() => navigation.navigate('OrderDetails',{itemId:id})} key={id} */}
                     <View
-                    key={id}
+                      key={id}
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',

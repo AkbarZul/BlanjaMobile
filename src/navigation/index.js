@@ -173,14 +173,14 @@ const StackScreen = ({navigation}) => {
           name="Search"
           component={SearchScreen}
           options={{
-            headerShown: false,
+            headerShown: true,
           }}
         />
         <Stack.Screen
           name="Filter"
           component={FilterScreen}
           options={{
-            headerShown: false,
+            headerShown: true,
           }}
         />
         <Stack.Screen
@@ -229,6 +229,11 @@ const StackScreen = ({navigation}) => {
           options={{
             headerShown: false,
           }}
+        />
+        <Stack.Screen
+          name="Shipping address"
+          component={ShippingAddressScreen}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </SocketProvider>

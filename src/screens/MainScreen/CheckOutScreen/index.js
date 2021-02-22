@@ -10,10 +10,14 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import {API_URL} from '@env';
+import {API_URL} from '@env';
 import axios from 'axios';
 import CheckBox from '@react-native-community/checkbox';
-import {clearCart, clearCheckout} from '../../../utils/redux/action/cartAction';
+import {
+  clearCart,
+  clearCheckout,
+  addToCheckout,
+} from '../../../utils/redux/action/cartAction';
 import {connect, useSelector} from 'react-redux';
 import PushNotification from 'react-native-push-notification';
 import {
@@ -22,32 +26,24 @@ import {
   handleScheduledNotification,
 } from '../../../notification';
 
-const CheckOut = ({checkout, navigation}) => {
-  const API_URL = 'http://192.168.1.2:8007';
-  const [address, setAddress] = useState({});
+const CheckOut = ({checkout, clearCart, navigation, route}) => {
+  console.log('ROUTE', route.params);
+  const {
+    id_address,
+    fullname,
+    address,
+    city,
+    region,
+    zip_code,
+    country,
+  } = route.params;
   const [checkbox, setCheckbox] = useState(false);
   const [checkbox2, setCheckbox2] = useState(false);
+  const [alamat, setAlamat] = useState([]);
 
   const channel = 'notification';
 
   const token = useSelector((state) => state.authReducer.token);
-
-  const getAddressUser = async () => {
-    await axios
-      .get(`${API_URL}/address`, {
-        headers: {
-          'x-access-token': 'Bearer ' + token,
-        },
-      })
-      .then((res) => {
-        const address = res.data.data[0];
-        setAddress(address);
-        console.log('ADDRESS', address);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
   useEffect(() => {
     PushNotification.createChannel(
@@ -73,15 +69,31 @@ const CheckOut = ({checkout, navigation}) => {
     handleSubmit();
   }, []);
 
-  const transaction = async () => {
+  const getAddressUser = async () => {
     await axios
-      .post(`${API_URL}/orders`, checkout, {
+      .get(`${API_URL}/address`, {
         headers: {
           'x-access-token': 'Bearer ' + token,
         },
       })
       .then((res) => {
-        console.log('success', checkout);
+        const address = res.data.data[0];
+        setAlamat(address);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const transaction = async () => {
+    await axios
+      .post(`${API_URL}/orders`, kirim, {
+        headers: {
+          'x-access-token': 'Bearer ' + token,
+        },
+      })
+      .then((res) => {
+        console.log('success', kirim);
       })
       .catch((err) => {
         console.log('ERROR', err.response);
@@ -89,6 +101,14 @@ const CheckOut = ({checkout, navigation}) => {
     clearCart();
     // clearCheckout();
   };
+
+  const kirim = {
+    item: checkout.item,
+    transaction_code: checkout.transaction_code,
+    id_address: id_address,
+    seller_id: checkout.seller_id,
+  };
+  addToCheckout({kirim});
 
   const handleSubmit = () => {
     const checkbox = {
@@ -100,6 +120,7 @@ const CheckOut = ({checkout, navigation}) => {
   };
 
   console.log('checkout', checkout);
+  console.log('checkout', kirim);
   return (
     <>
       <ScrollView style={styles.container}>
@@ -107,33 +128,76 @@ const CheckOut = ({checkout, navigation}) => {
         {/* {address.map(
           ({id_address, fullname, address, city, state, zip_code, country}) => {
             return ( */}
-        <View style={styles.card}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginTop: 15,
-            }}>
-            <Text>{address.fullname}</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Shipping address')}>
-              <Text style={{color: 'red'}}>Change</Text>
-            </TouchableOpacity>
+        {route.params.id_address !== undefined ? (
+          <View style={styles.card}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginTop: 15,
+              }}>
+              <Text>{fullname}</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Shipping address')}>
+                <Text style={{color: 'red'}}>Change</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{marginTop: 10}}>
+              <Text>{`${address}, ${city}`}</Text>
+              <Text>{`${region}, ${zip_code}, ${country}`}</Text>
+            </View>
           </View>
-          <View style={{marginTop: 10}}>
-            <Text>{`${address.address}, ${address.city}`}</Text>
-            <Text>{`${address.region}, ${address.zip_code}, ${address.country}`}</Text>
+        ) : route.params.id_address === undefined && alamat !== undefined ? (
+          <View style={styles.card}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginTop: 15,
+              }}>
+              <Text>{alamat.fullname}</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Shipping address')}>
+                <Text style={{color: 'red'}}>Change</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{marginTop: 10}}>
+              <Text>{`${alamat.address}, ${alamat.city}`}</Text>
+              <Text>{`${alamat.region}, ${alamat.zip_code}, ${alamat.country}`}</Text>
+            </View>
           </View>
-        </View>
+        ) : (
+          <View style={styles.card}>
+            <View
+              style={{
+                marginTop: 15,
+              }}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Adding Shipping Address')}>
+                <Text
+                  style={{
+                    color: 'black',
+                    alignSelf: 'center',
+                    paddingVertical: '10%',
+                    fontSize: 20,
+                  }}>
+                  Add Shipping Address
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
         <Text style={styles.payment}>Payment</Text>
         <View>
           <View style={styles.checkboxcontainer}>
-            <View style={styles.master}>
-              <Image
-                source={require('../../../assets/images/mastercard.png')}
-              />
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={styles.master}>
+                <Image
+                  source={require('../../../assets/images/mastercard.png')}
+                />
+              </View>
+              <Text size="l" children="MasterCard" style={{marginLeft: 20}} />
             </View>
-            <Text size="l" children="MasterCard" style={{marginLeft: -180}} />
             <CheckBox
               tintColors={{true: '#DB3022', false: '#9B9B9B'}}
               value={checkbox}
@@ -143,14 +207,16 @@ const CheckOut = ({checkout, navigation}) => {
         </View>
         <View>
           <View style={styles.checkboxcontainer}>
-            <View style={styles.master}>
-              <Image source={require('../../../assets/images/pos.png')} />
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={styles.master}>
+                <Image source={require('../../../assets/images/pos.png')} />
+              </View>
+              <Text
+                size="l"
+                children="Pos Indonesia"
+                style={{marginLeft: 20}}
+              />
             </View>
-            <Text
-              size="l"
-              children="Pos Indonesia"
-              style={{marginLeft: -160}}
-            />
             <CheckBox
               tintColors={{true: '#DB3022', false: '#9B9B9B'}}
               value={checkbox2}
@@ -160,10 +226,12 @@ const CheckOut = ({checkout, navigation}) => {
         </View>
         <View>
           <View style={styles.checkboxcontainer}>
-            <View style={styles.master}>
-              <Image source={require('../../../assets/images/gopay.png')} />
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={styles.master}>
+                <Image source={require('../../../assets/images/gopay.png')} />
+              </View>
+              <Text size="l" children="Gopay" style={{marginLeft: 20}} />
             </View>
-            <Text size="l" children="Gopay" style={{marginLeft: -210}} />
             <CheckBox
               tintColors={{true: '#DB3022', false: '#9B9B9B'}}
               // value={this.state.check3}
@@ -224,9 +292,10 @@ const CheckOut = ({checkout, navigation}) => {
                   text: 'OK',
                   onPress: () => {
                     transaction(),
+                      clearCart(),
                       showNotification(
-                        'Yeaah!',
-                        'Klik! untuk melihat lebih lanjut detail transaksi anda',
+                        'Congratulations!',
+                        'Your transaction successfull.',
                         channel,
                       ),
                       navigation.navigate('Success');
@@ -258,7 +327,7 @@ const styles = StyleSheet.create({
   },
 
   payment: {
-    marginTop: 30,
+    marginVertical: 30,
     fontSize: 24,
     fontWeight: 'bold',
   },
@@ -277,7 +346,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     // paddingHorizontal: 15,
-    marginTop: 30,
+    marginBottom: 20,
     alignItems: 'center',
   },
 
@@ -355,7 +424,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    clearCart: () => dispatch(clearCart()),
     clearCheckout: () => dispatch(clearCheckout()),
+    addToCheckout: ({kirim}) => dispatch(addToCheckout({kirim})),
   };
 };
 
