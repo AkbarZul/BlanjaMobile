@@ -2,39 +2,30 @@
 
 ## About the project
 
-Project Blanja App build in [React Native](https://reactnative.dev/) with backend [ExpressJS](https://expressjs.com/) and deployment backend [AWS](https://www.awseducate.com/).
+BlanjaMobile adalah sebuah aplikasi e-commerce dimana customer bisa membeli barang yang dicari dan seller bisa menjual barang. Blanja-Web ini dibuat untuk memudahkan seller dan customer dalam bertransaksi. Dibuat dengan framework javascript yaitu React Native untuk frontend, ExpressJs untuk backend, dan MYSQL untuk database.
 
-### Installation
+## Build with Project
+* [ReactNative](https://reactnative.dev/)
+* [MYSQL](https://www.mysql.com/)
+* [Bootstrap](https://getbootstrap.com/)
+* [Node js](https://nodejs.org/en/)
+* [React Bootstrap](https://react-bootstrap.github.io/)
 
-1. Clone the repo
-   ```sh
-   git clone https://github.com/AkbarZul/BlanjaMobile
-   ```
-2. Install yarn packages
-   ```sh
-   yarn
-   ```
-   This will install the dependencies inside `node_modules`
-### ENV configuration
+## How to install
+* Buka terminal atau command prompt
+* Clone Repository https://github.com/AkbarZul/BlanjaMobile
+* Buka folder dan tulis yarn atau npm install untuk install dependencies
+* tulis yarn start atau npm start
 
-Please create and make the changes in the .env file.
-```
-"APP_URL"="YOUR_IP_DATABASE"
-```
-### Usage
+## Screenshots
+* Home
+![Selection_019](https://user-images.githubusercontent.com/67698809/108764013-a4720200-7584-11eb-8fdf-745883a492e6.png)
+* Login
+![Selection_020](https://user-images.githubusercontent.com/67698809/108764058-afc52d80-7584-11eb-99ac-af133dc19e2a.png)
+* MyBag
+![Selection_021](https://user-images.githubusercontent.com/67698809/108764093-ba7fc280-7584-11eb-8d51-1610bc15766f.png)
+* CheckOut
+![Selection_022](https://user-images.githubusercontent.com/67698809/108764105-beabe000-7584-11eb-8369-7d1fd72a65ad.png)
 
-`Install APK in yoour phone`
-
-Runs the app in the development mode.<br>
-Open [Blanja App](https://drive.google.com/file/d/1NyuUadxaMX5B6nriM81ZzTUWAATB_cNk/view?usp=sharing) to download apk.
-
-
-### Photo Documentation
-
-## Login Screen
-<div style="text-align: center">
-   <img src="https://user-images.githubusercontent.com/52094775/108528532-1983d400-7306-11eb-87ab-82d25aaad166.jpg" width="25%">
-</div>
-
-
-
+## Repository Backend
+* [ClickHere](https://github.com/AkbarZul/BlanjaAPI)
