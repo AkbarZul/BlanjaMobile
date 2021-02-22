@@ -17,14 +17,14 @@ BlanjaMobile adalah sebuah aplikasi e-commerce dimana customer bisa membeli bara
 * Buka folder dan tulis yarn atau npm install untuk install dependencies
 * tulis yarn start atau npm start
 
-## Screenshots
-* Home
+* Screenshots
+## Home
 ![Selection_019](https://user-images.githubusercontent.com/67698809/108764013-a4720200-7584-11eb-8fdf-745883a492e6.png)
-* Login
+## Login
 ![Selection_020](https://user-images.githubusercontent.com/67698809/108764058-afc52d80-7584-11eb-99ac-af133dc19e2a.png)
-* MyBag
+## MyBag
 ![Selection_021](https://user-images.githubusercontent.com/67698809/108764093-ba7fc280-7584-11eb-8d51-1610bc15766f.png)
-* CheckOut
+## CheckOut
 ![Selection_022](https://user-images.githubusercontent.com/67698809/108764105-beabe000-7584-11eb-8369-7d1fd72a65ad.png)
 
 ## Repository Backend
