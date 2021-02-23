@@ -18,13 +18,16 @@ BlanjaMobile adalah sebuah aplikasi e-commerce dimana customer bisa membeli bara
 
 # Screenshots
 ## Home
-![Selection_019](https://user-images.githubusercontent.com/67698809/108764013-a4720200-7584-11eb-8fdf-745883a492e6.png)
+![Selection_023](https://user-images.githubusercontent.com/67698809/108801868-706d0000-75c9-11eb-9360-f974ab6f6ff7.png)
 ## Login
-![Selection_020](https://user-images.githubusercontent.com/67698809/108764058-afc52d80-7584-11eb-99ac-af133dc19e2a.png)
+![Selection_028](https://user-images.githubusercontent.com/67698809/108801886-7bc02b80-75c9-11eb-84a3-bf812e8e0c79.png)
+
+## Detail
+![Selection_024](https://user-images.githubusercontent.com/67698809/108801891-8084df80-75c9-11eb-8a34-91f6903abd34.png)
 ## MyBag
-![Selection_021](https://user-images.githubusercontent.com/67698809/108764093-ba7fc280-7584-11eb-8d51-1610bc15766f.png)
+![Selection_025](https://user-images.githubusercontent.com/67698809/108801902-87135700-75c9-11eb-9291-1dca90c60f26.png)
 ## CheckOut
-![Selection_022](https://user-images.githubusercontent.com/67698809/108764105-beabe000-7584-11eb-8369-7d1fd72a65ad.png)
+![Selection_026](https://user-images.githubusercontent.com/67698809/108801919-8ed2fb80-75c9-11eb-9f4b-b56dbb32abf6.png)
 
 ## Repository Backend
 * [ClickHere](https://github.com/AkbarZul/BlanjaAPI)
