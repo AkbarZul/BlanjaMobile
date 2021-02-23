@@ -2,7 +2,7 @@
 
 ## About the project
 
-BlanjaMobile adalah sebuah aplikasi e-commerce dimana customer bisa membeli barang yang dicari dan seller bisa menjual barang. Blanja-Web ini dibuat untuk memudahkan seller dan customer dalam bertransaksi. Dibuat dengan framework javascript yaitu React Native untuk frontend, ExpressJs untuk backend, dan MYSQL untuk database.
+BlanjaMobile adalah sebuah aplikasi e-commerce dimana customer bisa membeli barang yang dicari dan seller bisa menjual barang. BlanjaMobile ini dibuat untuk memudahkan seller dan customer dalam bertransaksi. Dibuat dengan framework javascript yaitu React Native untuk frontend, ExpressJs untuk backend, dan MYSQL untuk database.
 
 ## Build with Project
 * [ReactNative](https://reactnative.dev/)
