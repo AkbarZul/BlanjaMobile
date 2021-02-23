@@ -7,9 +7,7 @@ BlanjaMobile adalah sebuah aplikasi e-commerce dimana customer bisa membeli bara
 ## Build with Project
 * [ReactNative](https://reactnative.dev/)
 * [MYSQL](https://www.mysql.com/)
-* [Bootstrap](https://getbootstrap.com/)
 * [Node js](https://nodejs.org/en/)
-* [React Bootstrap](https://react-bootstrap.github.io/)
 
 ## How to install
 * Buka terminal atau command prompt
