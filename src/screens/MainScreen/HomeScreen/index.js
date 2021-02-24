@@ -15,10 +15,10 @@ import {Text} from '../../../components';
 import {IconStarAct} from '../../../assets/icons';
 import {Rating} from 'react-native-ratings';
 import {colors} from '../../../utils';
-// import {API_URL} from '@env';
+import {API_URL} from '@env';
 
 const HomeScreen = ({navigation}) => {
-  const API_URL = 'http://192.168.1.2:8007';
+  // const API_URL = 'http://192.168.1.2:8007';
   // const BASE_URL = process.env.BASE_URL;
   const [card, setCard] = useState([]);
   const [cardTwo, setCardTwo] = useState([]);

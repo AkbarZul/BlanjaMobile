@@ -9,6 +9,7 @@ import {
   ProductSellerScreen,
   AddProductSellerScreen,
   ShippingAddressScreen,
+  EditProductSellerScreen,
 } from '../../screens';
 
 const Stack = createStackNavigator();
@@ -46,6 +47,10 @@ const MainProfile = ({navigation}) => {
         name="AddProduct"
         component={AddProductSellerScreen}
         // options={{headerShown: false}}
+      />
+       <Stack.Screen
+        name="UpdateProductSeller"
+        component={EditProductSellerScreen}
       />
       <Stack.Screen
         name="Shipping address"

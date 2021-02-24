@@ -6,15 +6,14 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-// import {Picker} from '@react-native-picker/picker';
+// import {Picker} from 'native-base';
 import axios from 'axios';
-// import {API_URL} from '@env';
+import {API_URL} from '@env';
 import Text from '../../components/Text';
-import { colors } from "../../utils/colors";
+import {colors} from '../../utils/colors';
 import {FlatGrid} from 'react-native-super-grid';
 
 const FilterScreen = ({navigation}) => {
-  const API_URL = 'http://192.168.1.2:8007';
   const [filter, setFilter] = useState([]);
   const [category, setCategory] = useState([]);
   const [size, setSize] = useState([]);
@@ -23,7 +22,6 @@ const FilterScreen = ({navigation}) => {
   const [colorName, setColorName] = useState('');
   const [sizeName, setSizeName] = useState('');
   const [categoryName, setCategoryName] = useState('');
-
 
   const [pickCategory, setPickCategory] = useState();
   const [pickSize, setPickSize] = useState();
@@ -112,9 +110,13 @@ const FilterScreen = ({navigation}) => {
                     // overflow: 'hidden',
                     backgroundColor: color_hexa,
                     borderWidth: 2,
-                    borderColor: color_name === colorName ? color_hexa : 'white',
+                    borderColor:
+                      color_name === colorName ? color_hexa : 'white',
                   }}
-                  onPress={() => {setPickColor(id); setColorName(color_name)}}></TouchableOpacity>
+                  onPress={() => {
+                    setPickColor(id);
+                    setColorName(color_name);
+                  }}></TouchableOpacity>
               </View>
             );
           })}
@@ -126,9 +128,22 @@ const FilterScreen = ({navigation}) => {
         <ScrollView horizontal style={styles.rec2}>
           {size.map(({id, size}) => {
             return (
-              <TouchableOpacity onPress={() => {setPickSize(id); setSizeName(size);}} key={id}>
-                <View style={[styles.xs, {backgroundColor: sizeName === size ? '#DB3022' : "white"}]}>
-                  <Text size="m" children={size} style={{color: sizeName === size ? 'white' : "black"}} />
+              <TouchableOpacity
+                onPress={() => {
+                  setPickSize(id);
+                  setSizeName(size);
+                }}
+                key={id}>
+                <View
+                  style={[
+                    styles.xs,
+                    {backgroundColor: sizeName === size ? '#DB3022' : 'white'},
+                  ]}>
+                  <Text
+                    size="m"
+                    children={size}
+                    style={{color: sizeName === size ? 'white' : 'black'}}
+                  />
                 </View>
               </TouchableOpacity>
             );
@@ -142,10 +157,30 @@ const FilterScreen = ({navigation}) => {
           {category.map(({id_categories, category_name}) => {
             return (
               <TouchableOpacity
-                onPress={() => {setPickCategory(id_categories); setCategoryName(category_name);}}
+                onPress={() => {
+                  setPickCategory(id_categories);
+                  setCategoryName(category_name);
+                }}
                 key={id_categories}>
-                <View style={[styles.all, {backgroundColor: categoryName === category_name ? '#DB3022' : "white"}]}>
-                  <Text size="m" children={category_name} style={[styles.xs2, {color: categoryName === category_name ? 'white' : "black"}]} />
+                <View
+                  style={[
+                    styles.all,
+                    {
+                      backgroundColor:
+                        categoryName === category_name ? '#DB3022' : 'white',
+                    },
+                  ]}>
+                  <Text
+                    size="m"
+                    children={category_name}
+                    style={[
+                      styles.xs2,
+                      {
+                        color:
+                          categoryName === category_name ? 'white' : 'black',
+                      },
+                    ]}
+                  />
                 </View>
               </TouchableOpacity>
             );
@@ -160,7 +195,13 @@ const FilterScreen = ({navigation}) => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Catalog', {pickColor: pickColor, pickCategory: pickCategory, pickSize: pickSize})}>
+          onPress={() =>
+            navigation.navigate('Catalog', {
+              pickColor: pickColor,
+              pickCategory: pickCategory,
+              pickSize: pickSize,
+            })
+          }>
           <View style={styles.bt}>
             <Text size="m" children="Apply" />
           </View>
@@ -307,4 +348,3 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
-

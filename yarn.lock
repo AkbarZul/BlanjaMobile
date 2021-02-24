@@ -6241,6 +6241,13 @@ react-native-super-grid@^4.0.3:
   dependencies:
     prop-types "^15.6.0"
 
+react-native-toast-message@^1.4.7:
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/react-native-toast-message/-/react-native-toast-message-1.4.7.tgz#7db334f1425036181b634e5bd032f81ac8c00320"
+  integrity sha512-MTY/n9z4XSqb/YHgUBcLUHJf0QQtnVKgPcw99BUqE3E2pAh2BOjO7C0UrC9SmjBvRz68o1FCfYox5yhwJBAvHQ==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-vector-icons@^7.0.0, react-native-vector-icons@^7.1.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-7.1.0.tgz#145487d617b2a81d395d2cf64e6e065fcab3a454"

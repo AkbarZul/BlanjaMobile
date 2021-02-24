@@ -30,8 +30,11 @@ const DetailProductScreen = ({navigation, route, addToCart}) => {
   const [ukuran, setUkuran] = useState('');
   const [warna, setWarna] = useState('');
 
-  console.log('UKURAN', ukuran);
-  console.log('WARNA', warna);
+  const userId = useSelector((state) => state.authReducer.user_id);
+  console.log('USERID', userId);
+
+  // console.log('UKURAN', ukuran);
+  // console.log('WARNA', warna);
 
   const getProduct = async (itemId) => {
     await axios
@@ -77,7 +80,7 @@ const DetailProductScreen = ({navigation, route, addToCart}) => {
     getDataPopular(itemId);
     // getProducts(item);
     // getDataCard();
-  }, [itemId]);
+  }, [itemId, userId]);
 
   return (
     <>
@@ -372,6 +375,7 @@ const DetailProductScreen = ({navigation, route, addToCart}) => {
                   ukuran,
                   warna,
                   product.user_id,
+                  userId,
                 ),
               )
             }>
@@ -441,8 +445,8 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addToCart: (id, img, name, prc, qty, ukuran, warna, user_id) =>
-      dispatch(addToCart(id, img, name, prc, qty, ukuran, warna, user_id)),
+    addToCart: (id, img, name, prc, qty, ukuran, warna, user_id, userId) =>
+      dispatch(addToCart(id, img, name, prc, qty, ukuran, warna, user_id, userId)),
   };
 };
 export default connect(null, mapDispatchToProps)(DetailProductScreen);

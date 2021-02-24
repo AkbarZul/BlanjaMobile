@@ -1,26 +1,18 @@
-import React, {useState, useEffect, createRef} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  Button,
-  Image,
-} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, TouchableOpacity, Image, Modal} from 'react-native';
+import {Button} from 'native-base';
+import Toast from 'react-native-toast-message';
 import {FlatGrid} from 'react-native-super-grid';
 import axios from 'axios';
-import ActionSheet from 'react-native-actions-sheet';
 import {useSelector} from 'react-redux';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {FloatingMenu} from 'react-native-floating-action-menu';
+import {API_URL} from '@env';
+import {colors} from '../../../utils';
+import {Text} from '../../../components';
 
-// import {API_URL} from '@env';
-import { colors } from '../../../utils';
-
-const ProductSeller = ({navigation, route}) => {
-  const API_URL = 'http://192.168.1.2:8007';
+const ProductSeller = ({navigation}) => {
   //   const {itemId} = route.params;
   const [product, setProduct] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
   const token = useSelector((state) => state.authReducer.token);
 
   useEffect(() => {
@@ -50,6 +42,29 @@ const ProductSeller = ({navigation, route}) => {
       });
   };
 
+  const deleteProduct = async (id) => {
+    await axios
+      .delete(`${API_URL}/products/${id}`, {
+        headers: {
+          'x-access-token': 'Bearer ' + token,
+        },
+      })
+      .then((res) => {
+        Toast.show({
+          type: 'success',
+          position: 'top',
+          text1: 'Success delete product',
+          visibilityTime: 4000,
+          autoHide: true,
+        });
+        console.log('SUCCESS DELETE', res.data);
+        getProductsSeller();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <FlatGrid
@@ -58,42 +73,113 @@ const ProductSeller = ({navigation, route}) => {
         style={styles.gridView}
         spacing={10}
         renderItem={({item}) => (
-          <View style= {styles.containerCard}>
-            <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('DetailProduct', {
-                itemId: item.id,
-                categories: item.category_name,
-              })
-            }>
-            <View style={[styles.itemContainer, {backgroundColor: 'white'}]}>
-              <Image
-                source={{
-                  uri: `${API_URL}${JSON.parse(item.product_photo).shift()}`,
-                }}
+          <>
+            <View style={styles.containerCard}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('DetailProduct', {
+                    itemId: item.id,
+                    categories: item.category_name,
+                  })
+                }>
+                <View
+                  style={[styles.itemContainer, {backgroundColor: 'white'}]}>
+                  <Image
+                    source={{
+                      uri: `${API_URL}${JSON.parse(
+                        item.product_photo,
+                      ).shift()}`,
+                    }}
+                    style={{
+                      borderRadius: 10,
+                      width: '100%',
+                      height: 100,
+                    }}
+                    resizeMode="contain"
+                  />
+                  <View style={{marginVertical: 5}}>
+                    <Text style={styles.itemName}>{item.product_name}</Text>
+                    <Text style={styles.itemCode}>Rp.{item.product_price}</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <View
                 style={{
-                  borderRadius: 10,
-                  width: '100%',
-                  height: 100,
-                }}
-                resizeMode="contain"
-              />
-              <View style={{marginVertical: 5}}>
-                <Text style={styles.itemName}>{item.product_name}</Text>
-                <Text style={styles.itemCode}>Rp.{item.product_price}</Text>
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                  marginVertical: 5,
+                }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('UpdateProductSeller', {
+                      itemId: item.id,
+                    });
+                  }}
+                  style={[styles.btnEditDelete, {backgroundColor: '#77ff0e'}]}>
+                  <Text color="black" size="l">
+                    Edit
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btnEditDelete}
+                  onPress={() => {
+                    setModalVisible(true);
+                    // deleteProduct(item.id);
+                  }}>
+                  <Text color="white" size="l">
+                    Delete
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
-          </TouchableOpacity>
-          <View style={{flexDirection: 'row', justifyContent: 'space-around', marginVertical: 5}}>
-            <TouchableOpacity style={[styles.btnEditDelete, {backgroundColor: '#77ff0e'}]}>
-              <Text>Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.btnEditDelete}>
-              <Text style={{color: 'white'}}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-          </View>
-          
+            <Modal
+              animationType="fade"
+              transparent={true}
+              // hardwareAccelerated={true}
+              statusBarTranslucent={true}
+              visible={modalVisible}>
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>
+                    Are you sure want to delete product?
+                  </Text>
+                  <View
+                    style={{
+                      marginTop: 20,
+                      flexDirection: 'row',
+                      width: 250,
+                      justifyContent: 'space-between',
+                    }}>
+                    <Button
+                      style={{
+                        ...styles.closeButton,
+                        backgroundColor: colors.white,
+                        borderColor: colors.red,
+                        borderWidth: 1,
+                      }}
+                      onPress={() => {
+                        setModalVisible(!modalVisible);
+                      }}>
+                      <Text style={{...styles.textStyle, color: colors.red}}>
+                        No
+                      </Text>
+                    </Button>
+                    <Button
+                      style={{
+                        ...styles.closeButton,
+                        backgroundColor: colors.red,
+                      }}
+                      onPress={() => {
+                        deleteProduct(item.id);
+                        setModalVisible(!modalVisible);
+                      }}>
+                      <Text style={styles.textStyle}>Yes</Text>
+                    </Button>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+          </>
         )}
       />
       <TouchableOpacity
@@ -125,9 +211,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.red,
     paddingHorizontal: 20,
     paddingVertical: 5,
-    justifyContent:'center',
+    justifyContent: 'center',
     borderRadius: 50,
-
   },
   itemContainer: {
     // justifyContent: 'flex-end',
@@ -163,6 +248,51 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     //backgroundColor:'black'
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  modalView: {
+    height: 200,
+    width: 300,
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  closeButton: {
+    backgroundColor: '#6379F4',
+    height: 40,
+    width: 100,
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 25,
   },
 });
 

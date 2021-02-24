@@ -46,6 +46,8 @@ const BagScreen = ({
 
   const token = useSelector((state) => state.authReducer.token);
   const user_id = useSelector((state) => state.cart.cart);
+  const userId = useSelector((state) => state.authReducer.user_id);
+  console.log('USERID BAG', userId);
 
   // useEffect(() => {
   //   getAddressUser();
@@ -121,7 +123,7 @@ const BagScreen = ({
     });
     setTotalItems(items);
     setTotalPrice(prices);
-  }, [cart, totalPrice, totalItems, setTotalPrice, setTotalItems]);
+  }, [cart, totalPrice, totalItems, userId, setTotalPrice, setTotalItems]);
 
   return (
     <>

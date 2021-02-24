@@ -14,17 +14,16 @@ import {ButtonSubmit} from '../../../components/index';
 import FormInput from 'react-native-outline-input';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
-import {Picker as Select} from 'native-base';
+import {Picker} from 'native-base';
 import ActionSheet from 'react-native-actions-sheet';
 import {API_URL} from '@env';
 import {createRef} from 'react';
-
-//mock from api
-import response_size_json from './mock-size.json';
-import response_color_json from './mock-color.json';
+import Iconn from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-toast-message';
 
 const sizeSheetRef = createRef();
 const colorSheetRef = createRef();
+const photoSheetRef = createRef();
 
 const AddProduct = ({navigation}) => {
   useEffect(() => {
@@ -34,7 +33,6 @@ const AddProduct = ({navigation}) => {
     getCondition();
     getStatus();
   }, []);
-  const API_URL = 'http://192.168.1.2:8007';
 
   const BASE_URL = `${API_URL}`;
 
@@ -130,8 +128,8 @@ const AddProduct = ({navigation}) => {
     return selectedColors;
   };
 
-  const getCategory = async () => {
-    await axios
+  const getCategory = () => {
+    axios
       .get(BASE_URL + '/categories')
       .then((res) => {
         const categories = res.data.data;
@@ -143,8 +141,8 @@ const AddProduct = ({navigation}) => {
       });
   };
 
-  const getSize = async () => {
-    await axios
+  const getSize = () => {
+    axios
       .get(BASE_URL + '/sizes')
       .then((res) => {
         // const size = res.data.data.filter((item) => {
@@ -164,8 +162,8 @@ const AddProduct = ({navigation}) => {
       });
   };
 
-  const getColor = async () => {
-    await axios
+  const getColor = () => {
+    axios
       .get(BASE_URL + '/colors')
       .then((res) => {
         const color = res.data.data;
@@ -179,8 +177,8 @@ const AddProduct = ({navigation}) => {
       });
   };
 
-  const getCondition = async () => {
-    await axios
+  const getCondition = () => {
+    axios
       .get(BASE_URL + '/condition')
       .then((res) => {
         const condition = res.data.data;
@@ -192,8 +190,8 @@ const AddProduct = ({navigation}) => {
       });
   };
 
-  const getStatus = async () => {
-    await axios
+  const getStatus = () => {
+    axios
       .get(BASE_URL + '/status')
       .then((res) => {
         const status = res.data.data;
@@ -226,16 +224,16 @@ const AddProduct = ({navigation}) => {
     console.log('CATEGORY ', ctg);
     formatDataSizeToSend(size).map((element) => {
       data.append('sizes[]', JSON.stringify(element));
-    })
+    });
     formatDataColorToSend(color).map((element) => {
       data.append('colors[]', JSON.stringify(element));
-    })
+    });
     data.append('condition_id', cnd);
     data.append('product_price', prodPrice);
     data.append('product_qty', prodQty);
     data.append('product_desc', prodDesc);
     // data.append('image', image);
-    fileCamera !== 0 &&
+    if (Object.keys(fileCamera).length > 0) {
       data.append('image', {
         name: fileCamera.path.split('/').pop(),
         type: fileCamera.mime,
@@ -244,15 +242,19 @@ const AddProduct = ({navigation}) => {
             ? fileCamera.path
             : fileCamera.path.replace('file://', ''),
       });
-    for (let i = 0; i < filePath.length; i++) {
-      data.append('image', {
-        name: filePath[i].path.split('/').pop(),
-        type: filePath[i].mime,
-        uri:
-          Platform.OS === 'android'
-            ? filePath[i].path
-            : filePath[i].path.replace('file://', ''),
-      });
+    }
+
+    if (filePath[0]) {
+      for (let i = 0; i < filePath.length; i++) {
+        data.append('image', {
+          name: filePath[i].path.split('/').pop(),
+          type: filePath[i].mime,
+          uri:
+            Platform.OS === 'android'
+              ? filePath[i].path
+              : filePath[i].path.replace('file://', ''),
+        });
+      }
     }
     data.append('status_product_id', sts);
     console.log(data);
@@ -264,15 +266,14 @@ const AddProduct = ({navigation}) => {
         },
       })
       .then((res) => {
-        // Alert.alert('Success', 'Product Berhasil Ditambahkan', [
-        //   {
-        //     text: 'OK',
-        //     onPress: () => navigation.navigate('ProductSeller'),
-        //   },
-        // ]);
+        Toast.show({
+          type: 'success',
+          position: 'top',
+          text1: 'Success add product',
+          visibilityTime: 4000,
+          autoHide: true,
+        });
         navigation.navigate('ProductSeller');
-        console.log('bisa post');
-        console.log('aku sayang kamu', data);
       })
       .catch((err) => {
         console.log('error disokin');
@@ -290,7 +291,7 @@ const AddProduct = ({navigation}) => {
       mediaType: 'photo',
     })
       .then((images) => {
-        console.log('ini gambar', images);
+        console.log('ini gambar galeri', images);
         setFilePath(images);
       })
       .catch((e) => alert(e));
@@ -304,10 +305,12 @@ const AddProduct = ({navigation}) => {
       mediaType: 'photo',
     })
       .then((images) => {
-        console.log('ini gambar', images);
+        console.log('ini gambar camera', images);
         setFileCamera(images);
       })
-      .catch((e) => alert(e));
+      .catch((err) => {
+        console.log('ERRROR', err);
+      });
   };
 
   return (
@@ -327,13 +330,12 @@ const AddProduct = ({navigation}) => {
         </View>
       </ScrollView>
       <View style={{flexDirection: 'row'}}>
-        <TouchableOpacity onPress={pickCamera} style={styles.button}>
-          <Text style={styles.text}>Select Multiple</Text>
-          {size.map((s) => {
-            return s.is_selected ? (
-              <Text key={s.id.toString()}>{s.size}</Text>
-            ) : null;
-          })}
+        <TouchableOpacity
+          onPress={() => {
+            photoSheetRef.current?.setModalVisible();
+          }}
+          style={styles.button}>
+          <Text style={styles.text}>Select Photo</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.input}>
@@ -349,51 +351,124 @@ const AddProduct = ({navigation}) => {
       </View>
 
       <TouchableOpacity
+        style={{
+          elevation: 8,
+          backgroundColor: '#fff',
+          borderRadius: 10,
+          paddingVertical: 5,
+          width: 100,
+          margin: 5,
+        }}
         onPress={() => {
           colorSheetRef.current?.setModalVisible();
         }}>
-        <Text>color</Text>
+        <Text
+          style={{
+            fontSize: 18,
+            color: '#000',
+            fontWeight: 'bold',
+            alignSelf: 'center',
+            textTransform: 'uppercase',
+          }}>
+          Color
+        </Text>
       </TouchableOpacity>
 
+      <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+        {color.map((c) => {
+          return c.is_selected ? (
+            <View
+              style={{
+                height: 40,
+                width: 40,
+                backgroundColor: c.color_hexa,
+                margin: 5,
+                borderRadius: 25,
+              }}
+              key={c.id}></View>
+          ) : null;
+        })}
+      </View>
+
       <TouchableOpacity
+        style={{
+          elevation: 8,
+          backgroundColor: '#fff',
+          borderRadius: 10,
+          paddingVertical: 5,
+          width: 100,
+          margin: 5,
+        }}
         onPress={() => {
           sizeSheetRef.current?.setModalVisible();
         }}>
-        <Text>size</Text>
+        <Text
+          style={{
+            fontSize: 18,
+            color: '#000',
+            fontWeight: 'bold',
+            alignSelf: 'center',
+            textTransform: 'uppercase',
+          }}>
+          Size
+        </Text>
       </TouchableOpacity>
 
-      <Select
+      <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+        {size.map((s) => {
+          return s.is_selected ? (
+            <View
+              style={{
+                width: 40,
+                height: 40,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginHorizontal: 5,
+                borderRadius: 75,
+                backgroundColor: 'white',
+                borderWidth: 1,
+                margin: 5,
+                borderColor: 'red',
+              }}
+              key={s.id}>
+              <Text key={s.id.toString()}>{s.size}</Text>
+            </View>
+          ) : null;
+        })}
+      </View>
+
+      <Picker
         style={{width: '100%'}}
         mode="dialog"
         selectedValue={ctg}
         onValueChange={(itemValue) => {
           setCtg(itemValue);
         }}>
-        <Select.Item label="Category" />
+        <Picker.Item label="Category" />
         {categories.length !== 0 &&
           categories.map(({id_categories, category_name}) => {
             return (
-              <Select.Item
+              <Picker.Item
                 key={id_categories}
                 label={category_name}
                 value={id_categories}
               />
             );
           })}
-      </Select>
+      </Picker>
 
-      <Select
+      <Picker
         style={{width: '100%'}}
         selectedValue={cnd}
         onValueChange={(itemValue) => {
           setCnd(itemValue);
         }}>
-        <Select.Item label="Condition" />
+        <Picker.Item label="Condition" />
         {condition.length !== 0 &&
           condition.map(({id, conditions}) => {
-            return <Select.Item key={id} label={conditions} value={id} />;
+            return <Picker.Item key={id} label={conditions} value={id} />;
           })}
-      </Select>
+      </Picker>
 
       <View style={styles.input}>
         <FormInput
@@ -431,18 +506,18 @@ const AddProduct = ({navigation}) => {
         />
       </View>
 
-      <Select
+      <Picker
         style={{width: '100%'}}
         selectedValue={sts}
         onValueChange={(itemValue) => {
           setSts(itemValue);
         }}>
-        <Select.Item label="Status Barang" />
+        <Picker.Item label="Status Barang" />
         {status.length !== 0 &&
           status.map(({id, name}) => {
-            return <Select.Item key={id} label={name} value={id} />;
+            return <Picker.Item key={id} label={name} value={id} />;
           })}
-      </Select>
+      </Picker>
 
       <ActionSheet gestureEnabled ref={colorSheetRef}>
         <ScrollView>
@@ -450,7 +525,7 @@ const AddProduct = ({navigation}) => {
             <View style={{justifyContent: 'center'}}>
               <Text
                 style={{alignSelf: 'center', fontSize: 18, fontWeight: 'bold'}}>
-                CATEGORY
+                COLOR
               </Text>
               {color.map(({id, color_name}) => {
                 return (
@@ -494,6 +569,49 @@ const AddProduct = ({navigation}) => {
           </View>
         </ScrollView>
       </ActionSheet>
+
+      <ActionSheet gestureEnabled ref={photoSheetRef}>
+        <View style={{justifyContent: 'center'}}>
+          <Text style={{alignSelf: 'center', fontSize: 18, fontWeight: 'bold'}}>
+            Select Photo With
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'space-around',
+            }}>
+            <View
+              style={{
+                justifyContent: 'center',
+                width: '40%',
+                height: 100,
+                padding: 5,
+              }}>
+              <TouchableOpacity onPress={pickCamera}>
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <Iconn name="camera-outline" size={40} color="gray" />
+                  <Text style={{fontSize: 20, color: 'black'}}>Camera</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                justifyContent: 'center',
+                width: '40%',
+                height: 100,
+                padding: 5,
+              }}>
+              <TouchableOpacity onPress={pickMultiple}>
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <Iconn name="md-image-outline" size={40} color="gray" />
+                  <Text style={{fontSize: 20, color: 'black'}}>Galerry</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ActionSheet>
       <ButtonSubmit
         title="ADD PRODUCT"
         bg="red"
@@ -508,7 +626,7 @@ const styles = StyleSheet.create({
   selectedItem: {
     padding: 4,
     margin: 4,
-    backgroundColor: 'green',
+    backgroundColor: 'red',
     borderColor: 'black',
     borderWidth: 2,
   },
@@ -524,7 +642,7 @@ const styles = StyleSheet.create({
     // paddingHorizontal: 15,
   },
   button: {
-    backgroundColor: 'red',
+    backgroundColor: 'gray',
     marginBottom: 10,
     height: 40,
     justifyContent: 'center',
@@ -534,6 +652,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     textAlign: 'center',
+    padding: 5,
   },
   input: {
     paddingVertical: 15,
