@@ -13,10 +13,10 @@ import Iconn from 'react-native-vector-icons/Ionicons';
 import {colors} from '../../utils';
 import axios from 'axios';
 import ActionSheet from 'react-native-actions-sheet';
-// import {API_URL} from '@env';
+import {API_URL} from '@env';
 import {Rating} from 'react-native-ratings';
 
-const API_URL = 'http://192.168.1.2:8007';
+// const BASE_URL = 'http://192.168.1.10:2005';
 const actionSheetRef = createRef();
 
 export default function CatalogeScreen({navigation, route}) {
@@ -164,12 +164,12 @@ export default function CatalogeScreen({navigation, route}) {
       </View>
 
       <FlatGrid
-        // itemDimension={130}
+        itemDimension={130}
         data={products}
-        // style={styles.gridView}
+        style={styles.gridView}
         // staticDimension={300}
         // fixed
-        // spacing={10}
+        spacing={10}
         renderItem={({item}) => (
           <TouchableOpacity
             onPress={() =>

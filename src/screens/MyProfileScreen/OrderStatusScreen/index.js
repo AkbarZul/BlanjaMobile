@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   ToastAndroid,
+  Modal,
 } from 'react-native';
 import {Text, ButtonSubmit} from '../../../components';
 import axios from 'axios';
@@ -16,25 +17,21 @@ import ActionSheet from 'react-native-actions-sheet';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 import {API_URL} from '@env';
 import {TextInput} from 'react-native-gesture-handler';
+import {Picker, Button} from 'native-base';
+import {colors} from '../../../utils';
 
 const actionSheetRef = createRef();
-const OrderDetails = ({navigation, route}) => {
-  // const API_URL = 'http://192.168.1.2:8007';
+
+const OrderStatusScreen = ({navigation, route}) => {
   const {itemId, item, categories} = route.params;
-  const [review, setReview] = useState('');
-  const [rating, setRating] = useState('');
-  const [errMsg, setErrMsg] = useState(false);
-  const [productId, setProductId] = useState('');
-  const [orderDetail, setOrderDetail] = useState({});
+  const [orderStatus, setOrderStatus] = useState({});
   const token = useSelector((state) => state.authReducer.token);
+  const [status, setStatus] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
-  console.log('rating', rating);
-  console.log('review', review);
-  console.log('itemId', productId);
-
-  const getOrderDetail = async () => {
+  const getOrderHistorySellerById = async () => {
     await axios
-      .get(`${API_URL}/orders/${itemId}`, {
+      .get(`${API_URL}/orders/seller/${itemId}`, {
         headers: {
           'x-access-token': 'Bearer ' + token,
         },
@@ -43,86 +40,59 @@ const OrderDetails = ({navigation, route}) => {
         const order = res.data.data;
         const id = res.data.data.order_detail;
 
-        console.log('BY ID ', order);
-        setOrderDetail(order);
+        setOrderStatus(order);
+        setStatus(order.status_order);
       })
       .catch((err) => {
         setErrMsg(true);
         console.log(err);
       });
   };
-  const toastReview = () => {
-    ToastAndroid.show(
-      `Thank you, your feedback has been added!`,
-      ToastAndroid.SHORT,
-    );
-  };
 
-  const toastReviewFailed = () => {
-    ToastAndroid.show(
-      `Sorry, you have reviewed this product!`,
-      ToastAndroid.SHORT,
-    );
-  };
+  useEffect(() => {
+    getOrderHistorySellerById();
+  }, [itemId]);
 
-  const postReview = async () => {
-    const data = {
-      product_id: productId,
-      review: review,
-      rating: rating,
-    };
+  const handleSubmit = async () => {
+    const data = new URLSearchParams();
+    data.append('status_order', status);
+    console.log(`${API_URL}/orders/seller/${itemId}`);
+
     await axios
-      .post(`${API_URL}/review`, data, {
+      .put(`${API_URL}/orders/seller/${itemId}`, data, {
         headers: {
           'x-access-token': 'Bearer ' + token,
         },
       })
       .then((res) => {
-        // setErrMsg(false);
-        console.log('Success add review');
-        toastReview();
-        actionSheetRef.current?.hide();
+        navigation.navigate('MyOrders');
+        console.log('bisa update');
+        console.log('aku sayang kamu', data);
       })
       .catch((err) => {
-        // if (status === 403) {
-        // setErrMsg(true);
-        console.log(err, 'error add rating');
-        toastReviewFailed();
-        // }
+        console.log('error disokin');
+        console.log(err);
       });
   };
-
-  // const submitReview = () => {
-  //   postReview();
-  //   if (errMsg === true) {
-  //     toastReviewFailed();
-  //   } else {
-  //     toastReview();
-  //     actionSheetRef.current?.hide();
-  //   }
-  // };
-
-  useEffect(() => {
-    getOrderDetail();
-  }, [itemId]);
 
   return (
     <>
       <ScrollView style={styles.container}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <Text
-            children={`Order No. ${orderDetail.transaction_code}`}
+            children={`Order No. ${orderStatus.transaction_code}`}
             size="l"
             type="Bold"
             style={styles.textOrderNo}
           />
           <Text
-            children={moment(orderDetail.created_at).format('DD-MM-YYYY')}
+            children={moment(orderStatus.created_at).format('DD-MM-YYYY')}
             size="m"
             color="gray"
             style={styles.textOrderNo}
           />
         </View>
+
         <View>
           <View style={{flexDirection: 'row'}}>
             <Text
@@ -131,7 +101,7 @@ const OrderDetails = ({navigation, route}) => {
               color="gray"
             />
             <Text
-              children={orderDetail.status_order}
+              children={orderStatus.status_order}
               style={styles.textOrderNo}
             />
           </View>
@@ -140,8 +110,8 @@ const OrderDetails = ({navigation, route}) => {
         <View style={{flexDirection: 'row'}}>
           <Text
             children={
-              orderDetail.order_detail !== undefined &&
-              orderDetail.order_detail.length
+              orderStatus.order_detail !== undefined &&
+              orderStatus.order_detail.length
             }
             style={styles.textOrderNo}
             style={{fontWeight: 'bold'}}
@@ -152,10 +122,8 @@ const OrderDetails = ({navigation, route}) => {
             style={{fontWeight: 'bold'}}
           />
         </View>
-
-        {/* Awalan looping Card */}
-        {orderDetail.order_detail !== undefined &&
-          orderDetail.order_detail.map(
+        {orderStatus.order_detail !== undefined &&
+          orderStatus.order_detail.map(
             ({
               product_id,
               product_name,
@@ -166,9 +134,9 @@ const OrderDetails = ({navigation, route}) => {
               product_photo,
               id,
               order_id,
-            }) => {
+            }, index) => {
               return (
-                <View style={styles.card} key={product_id}>
+                <View style={styles.card} key={index}>
                   <View style={{flexDirection: 'row'}}>
                     <View>
                       <Image
@@ -236,27 +204,8 @@ const OrderDetails = ({navigation, route}) => {
                           />
                         </View>
                       </View>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          marginVertical: 5,
-                          // justifyContent: 'center',
-                          // width: '100%',
-                        }}>
-                        <TouchableOpacity
-                          style={styles.btn}
-                          bg="red"
-                          onPress={() => {
-                            setProductId(product_id);
-
-                            actionSheetRef.current?.setModalVisible();
-                          }}>
-                          <Text style={{color: 'white'}}>Leave Feedback</Text>
-                        </TouchableOpacity>
-                      </View>
                     </View>
                   </View>
-
                   <ActionSheet gestureEnabled ref={actionSheetRef}>
                     <View style={styles.actionSheet}>
                       <View>
@@ -299,7 +248,6 @@ const OrderDetails = ({navigation, route}) => {
               );
             },
           )}
-
         <Text
           children="Order information"
           size="l"
@@ -309,44 +257,17 @@ const OrderDetails = ({navigation, route}) => {
           <View style={{flexDirection: 'row', marginBottom: 10}}>
             <Text children="Shipping Address: " color="gray" size="l" />
             <Text
-              children={orderDetail.address}
+              children={orderStatus.address}
               color="black"
               size="l"
               style={{flexShrink: 1}}
             />
           </View>
-          {/* <View style={{flexDirection: 'row', marginBottom: 10}}>
-            <Text children="Payment method: " color="gray" size="l" />
-            <Text
-              children="7823 2525 4602 2829"
-              color="black"
-              size="l"
-              style={{right: -2}}
-            />
-          </View> */}
-          {/* <View style={{flexDirection: 'row', marginBottom: 10}}>
-            <Text children="Delivery method: " color="gray" size="l" />
-            <Text
-              children="FedEx, 3 days, $ 15"
-              color="black"
-              size="l"
-              style={{right: -6}}
-            />
-          </View> */}
-          {/* <View style={{flexDirection: 'row', marginBottom: 10}}>
-            <Text children="Discount: " color="gray" size="l" />
-            <Text
-              children="10%, Personal promo code"
-              color="black"
-              size="l"
-              style={{right: -60}}
-            />
-          </View> */}
           <View style={{flexDirection: 'row'}}>
             <Text children="Total Amount: " color="gray" size="l" />
             <View>
               <Text
-                children={`Rp.${orderDetail.total}`}
+                children={`Rp.${orderStatus.total}`}
                 color="black"
                 size="l"
                 style={{right: -30}}
@@ -355,18 +276,71 @@ const OrderDetails = ({navigation, route}) => {
           </View>
         </View>
       </ScrollView>
-      <View
-        style={{
-          position: 'absolute',
-          flexDirection: 'row',
-          marginHorizontal: 10,
-          bottom: 0,
-          justifyContent: 'space-between',
-        }}></View>
+      <View style={{margin: 10}}>
+        <Picker
+          note
+          style={{width: '100%'}}
+          mode="dropdown"
+          selectedValue={status}
+          onValueChange={(itemValue) => {
+            setStatus(itemValue);
+          }}>
+          <Picker.Item label="On Process" value="On Process" />
+          <Picker.Item label="Delivery" value="Delivery" />
+          <Picker.Item label="Delivered" value="Delivered" />
+        </Picker>
+        <ButtonSubmit
+          title="CHANGE"
+          bg="red"
+          onPress={() => setModalVisible(true)}
+          rippleColor="white"
+        />
+      </View>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        // hardwareAccelerated={true}
+        statusBarTranslucent={true}
+        visible={modalVisible}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              Are you sure want to change the order status?
+            </Text>
+            <View
+              style={{
+                marginTop: 20,
+                flexDirection: 'row',
+                width: 250,
+                justifyContent: 'space-between',
+              }}>
+              <Button
+                style={{
+                  ...styles.closeButton,
+                  backgroundColor: colors.white,
+                  borderColor: colors.red,
+                  borderWidth: 1,
+                }}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                }}>
+                <Text style={{...styles.textStyle, color: colors.red}}>No</Text>
+              </Button>
+              <Button
+                style={{...styles.closeButton, backgroundColor: colors.red}}
+                onPress={() => {
+                  handleSubmit();
+                  setModalVisible(!modalVisible);
+                }}>
+                <Text style={styles.textStyle}>Yes</Text>
+              </Button>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     height: '100%',
@@ -453,6 +427,50 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 25,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    height: 250,
+    width: 300,
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 25,
+  },
+  closeButton: {
+    backgroundColor: '#6379F4',
+    height: 40,
+    width: 100,
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });
-
-export default OrderDetails;
+export default OrderStatusScreen;

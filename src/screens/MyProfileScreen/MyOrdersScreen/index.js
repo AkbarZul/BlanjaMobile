@@ -4,19 +4,17 @@ import {Text} from '../../../components/';
 import axios from 'axios';
 import {connect, useSelector} from 'react-redux';
 import moment from 'moment';
-// import {API_URL} from '@env';
+import {API_URL} from '@env';
 
 const MyOrders = ({navigation}) => {
-  const API_URL = 'http://192.168.1.2:8007';
   const token = useSelector((state) => state.authReducer.token);
   const level = useSelector((state) => state.authReducer.level);
   const [historyOrders, setHistoryOrders] = useState([]);
   const [order, setOrder] = useState([]);
   const [tglFormat, setTglFormat] = useState();
-  console.log('order', order);
 
-  const getHistoryOrders = async () => {
-    await axios
+  const getHistoryOrders = () => {
+    axios
       .get(`${API_URL}/orders`, {
         headers: {
           'x-access-token': 'Bearer ' + token,
@@ -24,7 +22,7 @@ const MyOrders = ({navigation}) => {
       })
       .then((res) => {
         const historyOrders = res.data.data;
-        console.log('DATA ORDER ', historyOrders);
+        console.log('DATA ORDER ', res.data.data);
         const tgl = moment(res.data.data.created_at).format('DD-MM-YYYY');
         // console.log('TGL ', tgl);
         setTglFormat(tgl);
@@ -35,8 +33,8 @@ const MyOrders = ({navigation}) => {
       });
   };
 
-  const getIncomeOrders = async () => {
-    await axios
+  const getIncomeOrders = () => {
+    axios
       .get(`${API_URL}/orders/seller`, {
         headers: {
           'x-access-token': 'Bearer ' + token,
@@ -45,7 +43,6 @@ const MyOrders = ({navigation}) => {
       .then((res) => {
         const orderIncome = res.data.data;
         setOrder(orderIncome);
-        console.log('ORDERINCOME', orderIncome);
       })
       .catch((err) => {
         console.log(err);
@@ -163,8 +160,12 @@ const MyOrders = ({navigation}) => {
                 status_order,
               }) => {
                 return (
-                  <TouchableOpacity style={styles.card} key={id}>
-                    {/* onPress={() => navigation.navigate('OrderDetails',{itemId:id})} key={id} */}
+                  <TouchableOpacity
+                    style={styles.card}
+                    onPress={() =>
+                      navigation.navigate('OrderStatus', {itemId: id})
+                    }
+                    key={id}>
                     <View
                       key={id}
                       style={{

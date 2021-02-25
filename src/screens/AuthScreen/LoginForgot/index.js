@@ -7,12 +7,12 @@ import {
   ButtonSubmit,
   OutlineFormInput,
 } from '../../../components/index';
-// import {API_URL} from '@env';
+import {API_URL} from '@env';
 
 import OutlineInput from 'react-native-outline-input';
 
 const LoginForgot = ({navigation}) => {
-  const API_URL = 'http://192.168.1.2:8007';
+  // const API_URL = 'http://192.168.1.2:8007';
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [errMsg, setErrMsg] = useState('');

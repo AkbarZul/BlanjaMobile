@@ -13,10 +13,10 @@ import {
 import Star from '../../assets/images/Starfull.png';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 import axios from 'axios';
-// import {API_URL} from '@env';
+import {API_URL} from '@env';
 
 const RatingAndReview = ({route}) => {
-  const API_URL = 'http://192.168.1.2:8007';
+  // const API_URL = 'http://192.168.1.2:8007';
   const {itemId} = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [newReview, setNewReview] = useState('');

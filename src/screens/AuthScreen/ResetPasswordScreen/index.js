@@ -5,10 +5,10 @@ import {ButtonSubmit} from '../../../components/index';
 import FormInput from 'react-native-outline-input';
 import axios from 'axios';
 import {useSelector} from 'react-redux';
-// import {API_URL} from '@env';
+import {API_URL} from '@env';
 
 const ResetPassword = ({navigation}) => {
-  const API_URL = 'http://192.168.1.2:8007';
+  // const API_URL = 'http://192.168.1.2:8007';
   const [pass, setPass] = useState('');
   const [pass2, setPass2] = useState('');
   const [errMsg, setErrMsg] = useState('');

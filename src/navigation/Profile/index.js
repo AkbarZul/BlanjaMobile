@@ -10,6 +10,8 @@ import {
   AddProductSellerScreen,
   ShippingAddressScreen,
   EditProductSellerScreen,
+  ListChat,
+  OrderStatusScreen,
 } from '../../screens';
 
 const Stack = createStackNavigator();
@@ -57,6 +59,8 @@ const MainProfile = ({navigation}) => {
         component={ShippingAddressScreen}
         options={{headerShown: false}}
       />
+      <Stack.Screen name="ListChat" component={ListChat} />
+      <Stack.Screen name="OrderStatus" component={OrderStatusScreen} />
     </Stack.Navigator>
   );
 };

@@ -11,10 +11,10 @@ import {
   DrawerLayoutAndroidComponent,
   InputAccessoryView,
 } from 'react-native';
-// import {API_URL} from '@env';
+import {API_URL} from '@env';
 
 const ShopScreen = ({navigation}) => {
-  const API_URL = 'http://192.168.1.2:8007';
+  // const API_URL = 'http://192.168.1.2:8007';
   // const BASE_URL = 'http://192.168.1.10:2005';
   const [category, setCategory] = useState([]);
 

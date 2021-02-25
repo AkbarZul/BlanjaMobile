@@ -17,6 +17,7 @@ import SettingsScreen from './MyProfileScreen/SettingsScreen';
 import ShippingAddressScreen from './MyProfileScreen/ShippingAddressScreen';
 import AddingShippingAddressScreen from './MyProfileScreen/AddingShippingAddress';
 import UpdateAddressScreen from './MyProfileScreen/UpdateAddressScreen';
+import OrderStatusScreen from './MyProfileScreen/OrderStatusScreen';
 
 import DetailProductScreen from './DetailProductScreen';
 import NotificationScreen from './NotificationScreen';
@@ -35,6 +36,7 @@ import ProductSellerScreen from './MyProfileScreen/ProductSellerScreen';
 import AddProductSellerScreen from './MyProfileScreen/AddProductSellerScreen';
 import EditProductSellerScreen from "./MyProfileScreen/EditProductSellerScreen";
 import ChatScreen from './ChatScreen';
+import ListChat from './ListChat';
 
 export {
   LoginScreen,
@@ -68,4 +70,6 @@ export {
   AddProductSellerScreen,
   ChatScreen,
   RatingAndReview,
+  ListChat,
+  OrderStatusScreen,
 };

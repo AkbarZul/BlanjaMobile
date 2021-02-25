@@ -13,13 +13,13 @@ import {
 import Icon from 'react-native-vector-icons/EvilIcons';
 import Iconn from 'react-native-vector-icons/MaterialCommunityIcons';
 import Text from '../../../components/Text';
-// import {API_URL} from '@env';
+import {API_URL} from '@env';
 import axios from 'axios';
 import {useSelector} from 'react-redux';
 import {colors} from '../../../utils';
 
 const ShippingAddress = ({navigation, route}) => {
-  const API_URL = 'http://192.168.1.2:8007';
+  // const API_URL = 'http://192.168.1.2:8007';
   const [alamat, setAlamat] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 

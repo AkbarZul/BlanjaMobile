@@ -8,7 +8,7 @@ import {
   ButtonSubmit,
   OutlineFormInput,
 } from '../../../components/index';
-// import {API_URL} from '@env';
+import {API_URL} from '@env';
 import {colors} from '../../../utils';
 
 //redux
@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 import { setEmailForgot } from '../../../utils/redux/action/authAction';
 
 const ForgotPassword = ({navigation, setEmailForgot}) => {
-  const API_URL = 'http://192.168.1.2:8007';
+  // const API_URL = 'http://192.168.1.2:8007';
   const [email, setEmail] = useState('');
   const [err, setErr] = useState('');
 

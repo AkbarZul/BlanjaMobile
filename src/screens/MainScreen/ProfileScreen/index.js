@@ -246,7 +246,8 @@ const ProfileScreen = ({navigation, logout}) => {
             <View>
               <TouchableOpacity
                 style={styles.order}
-                onPress={() => navigation.navigate('Chat')}>
+                // onPress={() => navigation.navigate('Chat')}>
+                onPress={() => navigation.navigate('ListChat')}>
                 <View>
                   <Text children="Chatting" size="xl" />
                   <Text children="Chatting" size="m" color="gray" />
@@ -337,7 +338,8 @@ const ProfileScreen = ({navigation, logout}) => {
             <View>
               <TouchableOpacity
                 style={styles.order}
-                onPress={() => navigation.navigate('Chat')}>
+                // onPress={() => navigation.navigate('Chat')}>
+                onPress={() => navigation.navigate('ListChat')}>
                 <View>
                   <Text children="Chatting" size="xl" />
                   <Text children="Chatting" size="m" color="gray" />

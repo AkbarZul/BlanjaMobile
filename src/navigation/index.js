@@ -103,8 +103,9 @@ const MainProfileScreen = () => {
 };
 
 const StackScreen = ({navigation}) => {
+  const user_id = useSelector((state) => state.authReducer.user_id);
   return (
-    <SocketProvider>
+    <SocketProvider id={user_id}>
       <Stack.Navigator>
         <Stack.Screen
           initialRouteName="Splash"
