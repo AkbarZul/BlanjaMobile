@@ -19,7 +19,7 @@
       android:name=".MainApplication"
       android:label="@string/app_name"
       android:icon="@mipmap/icon_blanja"
-      android:roundIcon="@mipmap/ic_launcher_round"
+      android:roundIcon="@mipmap/icon_blanja"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
       <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground"

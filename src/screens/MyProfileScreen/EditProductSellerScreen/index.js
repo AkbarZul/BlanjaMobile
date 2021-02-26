@@ -25,6 +25,7 @@ const colorSheetRef = createRef();
 const photoSheetRef = createRef();
 
 const EditProduct = ({navigation, route}) => {
+  // const API_URL='http://107.20.158.100:8007'
   const token = useSelector((state) => state.authReducer.token);
 
   const {itemId} = route.params;
