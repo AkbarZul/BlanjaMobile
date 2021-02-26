@@ -269,7 +269,7 @@ const AddProduct = ({navigation}) => {
         Toast.show({
           type: 'success',
           position: 'top',
-          text1: 'Success add product',
+          text1: 'Yeah, Success add product',
           visibilityTime: 4000,
           autoHide: true,
         });

@@ -53,7 +53,7 @@ const ProductSeller = ({navigation}) => {
         Toast.show({
           type: 'success',
           position: 'top',
-          text1: 'Success delete product',
+          text1: 'You delete product',
           visibilityTime: 4000,
           autoHide: true,
         });

@@ -347,7 +347,7 @@ const EditProduct = ({navigation, route}) => {
         Toast.show({
           type: 'success',
           position: 'top',
-          text1: 'Success update product',
+          text1: 'yeah, success update product',
           visibilityTime: 4000,
           autoHide: true,
         });
@@ -716,7 +716,7 @@ const EditProduct = ({navigation, route}) => {
       </ActionSheet>
 
       <ButtonSubmit
-        title="ADD PRODUCT"
+        title="SAVE PRODUCT"
         bg="red"
         rippleColor="white"
         onPress={() => {
